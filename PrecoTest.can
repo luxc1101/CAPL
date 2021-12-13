@@ -28,7 +28,9 @@ void attribut_msg(message*m,int chn, int dlc, dword ID)
   m.dlc = dlc; // assign dlc
   m.id = mkExtId(ID); // assign message ID
 }
-
+/************************************************************** 
+convert VehSpeed singal of Benz to J1939 TachographVehicleSpeed
+***************************************************************/
 on message VehSpd_X_AR2
 {
   J1939SpdFactor = 0.0039062485409696;
@@ -46,7 +48,7 @@ on message VehSpd_X_AR2
   m.byte(7) = (0xFF00 & VehSpeedRaw_J) >> 8;
   output(m);
 }
-
+/*****************************End*****************************/
 
 
 
