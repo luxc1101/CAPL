@@ -50,8 +50,6 @@ on message VehSpd_X_AR2
 }
 /*****************************End*****************************/
 
-
-
 /*
 on message CAN1.* // Called when a message received on CAN1
 {
