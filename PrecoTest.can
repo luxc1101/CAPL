@@ -32,7 +32,7 @@ void attribut_msg(message*m,int chn, int dlc, dword ID)
   m.id = mkExtId(ID); // assign message ID
 }
 /************************************************************** 
-convert VehSpeed singal of Benz to J1939 TachographVehicleSpeed
+convert VehSpeed signal of Benz to J1939 TachographVehicleSpeed
 ***************************************************************/
 on message VehSpd_X_AR2
 {
@@ -44,7 +44,7 @@ on message VehSpd_X_AR2
   //Write("VehspeedRaw: %d", VehSpeedRaw_B);
   VehSpeedPhys_B = BenzFactor*VehSpeedRaw_B + BenzOffset; // calculate the Benz phys value hier km/h
   //Write("VehspeedPhys: %f", VehSpeedPhys_B);
-  VehSpeedRaw_J = (VehSpeedPhys_B-J1939Offset)/J1939Factor; // calculate row value of J1939
+  VehSpeedRaw_J = (VehSpeedPhys_B-J1939Offset)/J1939Factor; // calculate raw value of J1939
   //Write("VehspeedRaw J1939: %X", VehSpeedRaw_J);
   attribut_msg(m,2,this.dlc, 0xCFE6C17);
   m.byte(6) = 0x00FF & VehSpeedRaw_J;
@@ -55,7 +55,7 @@ on message VehSpd_X_AR2
 
 
 /************************************************************** 
-convert StWheel singal of Benz to J1939 Steering of wheel
+convert StWheel signal of Benz to J1939 Steering of wheel
 ***************************************************************/
 on message StWhl_Angl_Stat_AR2
 {
@@ -67,14 +67,13 @@ on message StWhl_Angl_Stat_AR2
   //Write("StWhlRaw: %d",StWhlRaw_B);
   StWhlPhys_B= BenzFactor*StWhlRaw_B + BenzOffset; // calculate the Benz phys value hier rad
   //Write("StWhlPhys_B: %f", StWhlRaw_B);
-  StWhlRaw_J = (StWhlPhys_B-J1939Offset)/J1939Factor; // calculate row value of J1939
+  StWhlRaw_J = (StWhlPhys_B-J1939Offset)/J1939Factor; // calculate raw value of J1939
   //Write("StWhlRaw J1939: %X", StWhlRaw_J);
   attribut_msg(m,2,this.dlc, 0x18F0090B);
   m.byte(0) = 0x00FF & StWhlRaw_J;
   m.byte(1) = (0xFF00 & StWhlRaw_J) >> 8;
   output(m);
 }
-
 /*****************************End*****************************/
 
 /*
