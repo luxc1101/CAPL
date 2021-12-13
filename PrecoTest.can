@@ -19,6 +19,9 @@ variables
   int VehSpeedRaw_B;
   int VehSpeedRaw_J;
   /*SteerWheelAngle Variables*/
+  float StWhlPhys_B;
+  int StWhlRaw_B;
+  int StWhlRaw_J;
 
 }
 
