@@ -1,0 +1,181 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_:
+VAL_TABLE_ Brk_Stat 3 "Description for the value '0x3'" 2 "Description for the value '0x2'" 1 "BRAKING" 0 "IDLE" ;
+VAL_TABLE_ FCW_Stat 3 "Description for the value '0x3'" 2 "FCW_FLT" 1 "FCW_ACTV" 0 "FCW_OFF" ;
+VAL_TABLE_ FCW_AcustWarn_Rq 3 "Description for the value '0x3'" 2 "NDEF2" 1 "ENBL" 0 "DSABL" ;
+VAL_TABLE_ FCW_IndLmp_On_Rq 3 "Description for the value '0x3'" 2 "BLINK" 1 "CONT" 0 "OFF" ;
+VAL_TABLE_ TurnIndLvr_Stat 2 "RIGHT" 1 "LEFT" 0 "IDLE" ;
+VAL_TABLE_ BrkPdl_Stat 3 "Description for the value '0x3'" 2 "NDEF2" 1 "PSD" 0 "UPSTOP" ;
+VAL_TABLE_ Brk_Stat 3 "Description for the value '0x3'" 2 "NDEF2" 1 "BRAKING" 0 "IDLE" ;
+VAL_TABLE_ VehAccel_X_LDC_VehDir 7 "Description for the value '0x7'" 6 "Description for the value '0x6'" 5 "NDEF5" 4 "STOP_CONF" 3 "STOP" 2 "BACKWARD" 1 "FORWARD" 0 "UNKNOWN" ;
+VAL_TABLE_ AS_Ovr_D 3 "Description for the value '0x3'" 2 "DRV_OVERRIDE" 1 "NDEF1" 0 "IDLE" ;
+VAL_TABLE_ VehAccel_X_LDC_Stat 3 "Description for the value '0x3'" 2 "INACTIVE" 1 "SATURATE" 0 "NORMAL" ;
+VAL_TABLE_ VehAccel_X_Dsabl_Rq_ESP 3 "Description for the value '0x3'" 2 "CONT_DSABL" 1 "TMP_DSABL" 0 "IDLE" ;
+VAL_TABLE_ VehSp_Stat 3 "Description for the value '0x3'" 2 "VEH_SP_DTCT" 1 "VEH_SP_NOT_DTCT" 0 "VOID" ;
+VAL_TABLE_ VehDrvDir_Stat 3 "Description for the value '0x3'" 2 "BACKWARD" 1 "FORWARD" 0 "VOID" ;
+VAL_TABLE_ VehSpd_X_Qual 3 "Description for the value '0x3'" 2 "PHYS_LIM" 1 "Normal operation" 0 "Limited signal generation" ;
+
+
+BO_ 61 Eng_Rs_3_AR2: 8 Vector__XXX
+ SG_ AccelPdlPosn : 16|8@1- (0.4,0) [0|100] "" Vector__XXX
+
+BO_ 1173 FCW_Disp_Rq_Gw_AR: 8 Vector__XXX
+ SG_ FCW_Stat : 4|3@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ FCW_IndLmp_On_Rq : 0|2@1- (1,0) [0|0] "" Vector__XXX
+ SG_ FCW_AcustWarn_Rq : 2|2@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 150 VehDyn_Stat2_AR2: 5 Vector__XXX
+ SG_ VehYawRate_Raw : 24|16@1+ (0.01,-327.68) [-327.68|327.66] "" Vector__XXX
+
+BO_ 427 ClockSync_Stat_FR2: 8 Vector__XXX
+ SG_ ClockSync_Second : 28|32@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 481 SCCM_Sw_Stat_AR2: 8 Vector__XXX
+ SG_ TurnIndLvr_Stat : 12|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 238 VehAccel_X_Rq_AR2: 8 Vector__XXX
+ SG_ BrkPrefill_Rq_RDU : 47|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VehAccel_X_Rq_Raw : 32|10@1+ (0.025,0) [-15|10.525] "" Vector__XXX
+ SG_ VehAccel_X_Rq : 16|14@1+ (0.004,-40) [0|0] "" Vector__XXX
+
+BO_ 47 StWhl_Angl_Stat_AR2: 8 Vector__XXX
+ SG_ StWhl_AnglSpd : 32|14@1+ (0.5,-4096) [0|0] "" Vector__XXX
+ SG_ StWhl_Angl : 16|14@1+ (0.1,-819.2) [0|0] "" Vector__XXX
+
+BO_ 131 STA_Rs1_AR2: 8 Vector__XXX
+ SG_ EPS_FtWhlAngl_Offset : 32|8@1+ (0.025,-3.2) [0|0] "" Vector__XXX
+ SG_ EPS_FtWhlAngl : 16|15@1+ (0.005,-81.92) [0|0] "" Vector__XXX
+
+BO_ 148 VehDyn_Stat1_AR2: 8 Vector__XXX
+ SG_ VehAccel_Y_V2 : 24|10@1+ (0.02,-10.24) [0|0] "" Vector__XXX
+ SG_ VehAccel_X_V2 : 12|12@1+ (0.02,-40.96) [0|0] "" Vector__XXX
+
+BO_ 236 VehAccel_X_Rs2_AR2: 8 Vector__XXX
+ SG_ VehAccel_X_LDC_VehSpd_Rs : 48|16@1+ (0.0016,0) [0|0] "" Vector__XXX
+ SG_ VehAccel_X_LDC_WhlTrq_Rs : 32|16@1+ (1.6,-64000) [0|0] "" Vector__XXX
+ SG_ VehAccel_X_LDC_BrkTrq_Rs : 16|16@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 135 BrkSys_Stat_AR2: 8 Vector__XXX
+ SG_ BrkTrq_V2 : 16|13@1+ (3,0) [0|0] "" Vector__XXX
+ SG_ BrkPdl_Stat : 14|2@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Brk_Stat : 12|2@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 234 VehAccel_X_Rs1_AR2: 8 Vector__XXX
+ SG_ VehAccel_X_LDC_VehDir : 0|3@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VehAccel_X_Calc_EM_Trq : 32|9@1+ (0.03125,-8) [0|0] "" Vector__XXX
+ SG_ AS_Ovr_D : 30|2@1- (1,0) [0|0] "" Vector__XXX
+ SG_ VehAccel_X_Rs : 16|14@1+ (0.004,-40) [0|0] "" Vector__XXX
+ SG_ VehAccel_X_LDC_Stat : 14|2@1- (1,0) [0|0] "" Vector__XXX
+ SG_ VehAccel_X_Dsabl_Rq_ESP : 12|2@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 152 VehSpd_X_AR2: 8 Vector__XXX
+ SG_ StWhl_Angl_CarvOffset : 56|8@1- (0.1,-12.7) [0|0] "" Vector__XXX
+ SG_ VehSp_Stat : 52|2@1- (1,0) [0|0] "" Vector__XXX
+ SG_ VehDrvDir_Stat : 14|2@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VehSpd_X_Qual : 12|2@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ VehSpd_X : 28|12@1- (0.1,0) [-204.8|204.7] "" Vector__XXX
+
+
+
+EV_ EnvKlemme30: 0 [0|1] "" 1 1 DUMMY_NODE_VECTOR0 Vector__XXX;
+
+EV_ EnvKlemme15: 0 [0|1] "" 0 2 DUMMY_NODE_VECTOR0 Vector__XXX;
+
+CM_ SG_ 135 BrkTrq_V2 "Actual driving brake torque (i.e. without brake torque of electrical machine)";
+CM_ SG_ 135 BrkPdl_Stat "Brake pedal state";
+CM_ SG_ 234 VehAccel_X_LDC_Stat "Longitudinal controller state";
+CM_ SG_ 234 VehAccel_X_Dsabl_Rq_ESP "Vehicle longitudinal acceleration disable request";
+BA_DEF_ BU_  "NodeLayerModules" STRING ;
+BA_DEF_ BO_  "GenMsgStartDelayTime" INT 0 65535;
+BA_DEF_ SG_  "NWM-WakeupAllowed" ENUM  "No","Yes";
+BA_DEF_ BO_  "NmMessage" ENUM  "no","yes";
+BA_DEF_ BO_  "GenMsgILSupport" ENUM  "No","Yes";
+BA_DEF_ BU_  "NmNode" ENUM  "no","yes";
+BA_DEF_ BU_  "NmStationAddress" INT 0 63;
+BA_DEF_  "NmBaseAddress" HEX 1024 1087;
+BA_DEF_ BO_  "GenMsgCycleTimeFast" INT 0 50000;
+BA_DEF_  "BusType" STRING ;
+BA_DEF_ BO_  "GenMsgCycleTime" INT 0 50000;
+BA_DEF_ BO_  "GenMsgDelayTime" INT 0 1000;
+BA_DEF_ BO_  "GenMsgNrOfRepetition" INT 0 999999;
+BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic","NotUsed","NotUsed","NotUsed","NotUsed","NotUsed","NotUsed","IfActive","NoMsgSendType","NotUsed","vector_leerstring";
+BA_DEF_ SG_  "GenSigInactiveValue" INT 0 100000;
+BA_DEF_ SG_  "GenSigSendType" ENUM  "Cyclic","OnWrite","OnWriteWithRepetition","OnChange","OnChangeWithRepetition","IfActive","IfActiveWithRepetition","NoSigSendType","NotUsed","NotUsed","NotUsed","NotUsed","NotUsed";
+BA_DEF_ SG_  "GenSigStartValue" FLOAT 0 100000000000;
+BA_DEF_DEF_  "NodeLayerModules" "CANoeILNLVector.dll";
+BA_DEF_DEF_  "GenMsgStartDelayTime" 0;
+BA_DEF_DEF_  "NWM-WakeupAllowed" "";
+BA_DEF_DEF_  "NmMessage" "no";
+BA_DEF_DEF_  "GenMsgILSupport" "Yes";
+BA_DEF_DEF_  "NmNode" "no";
+BA_DEF_DEF_  "NmStationAddress" 0;
+BA_DEF_DEF_  "NmBaseAddress" 1024;
+BA_DEF_DEF_  "GenMsgCycleTimeFast" 0;
+BA_DEF_DEF_  "BusType" "";
+BA_DEF_DEF_  "GenMsgCycleTime" 0;
+BA_DEF_DEF_  "GenMsgDelayTime" 0;
+BA_DEF_DEF_  "GenMsgNrOfRepetition" 0;
+BA_DEF_DEF_  "GenMsgSendType" "NoMsgSendType";
+BA_DEF_DEF_  "GenSigInactiveValue" 0;
+BA_DEF_DEF_  "GenSigSendType" "Cyclic";
+BA_DEF_DEF_  "GenSigStartValue" 0;
+BA_ "GenSigStartValue" SG_ 150 VehYawRate_Raw 32768;
+BA_ "GenSigStartValue" SG_ 238 VehAccel_X_Rq 10000;
+BA_ "GenSigStartValue" SG_ 47 StWhl_AnglSpd 8192;
+BA_ "GenSigStartValue" SG_ 47 StWhl_Angl 8192;
+BA_ "GenSigStartValue" SG_ 131 EPS_FtWhlAngl_Offset 128;
+BA_ "GenSigStartValue" SG_ 131 EPS_FtWhlAngl 16384;
+BA_ "GenSigStartValue" SG_ 148 VehAccel_Y_V2 512;
+BA_ "GenSigStartValue" SG_ 148 VehAccel_X_V2 2048;
+BA_ "GenSigStartValue" SG_ 236 VehAccel_X_LDC_WhlTrq_Rs 40000;
+BA_ "GenSigStartValue" SG_ 234 VehAccel_X_Calc_EM_Trq 256;
+BA_ "GenSigStartValue" SG_ 234 VehAccel_X_Rs 10000;
+BA_ "GenSigStartValue" SG_ 152 StWhl_Angl_CarvOffset 127;
+VAL_ 1173 FCW_Stat 3 "Description for the value '0x3'" 2 "FCW_FLT" 1 "FCW_ACTV" 0 "FCW_OFF" ;
+VAL_ 1173 FCW_IndLmp_On_Rq 3 "Description for the value '0x3'" 2 "BLINK" 1 "CONT" 0 "OFF" ;
+VAL_ 1173 FCW_AcustWarn_Rq 3 "Description for the value '0x3'" 2 "NDEF2" 1 "ENBL" 0 "DSABL" ;
+VAL_ 481 TurnIndLvr_Stat 3 "Description for the value '0x3'" 2 "RIGHT" 1 "LEFT" 0 "IDLE" ;
+VAL_ 135 BrkPdl_Stat 3 "Description for the value '0x3'" 2 "NDEF2" 1 "PSD" 0 "UPSTOP" ;
+VAL_ 135 Brk_Stat 3 "Description for the value '0x3'" 2 "NDEF2" 1 "BRAKING" 0 "IDLE" ;
+VAL_ 234 VehAccel_X_LDC_VehDir 7 "Description for the value '0x7'" 6 "Description for the value '0x6'" 5 "NDEF5" 4 "STOP_CONF" 3 "STOP" 2 "BACKWARD" 1 "FORWARD" 0 "UNKNOWN" ;
+VAL_ 234 AS_Ovr_D 3 "Description for the value '0x3'" 2 "DRV_OVERRIDE" 1 "NDEF1" 0 "IDLE" ;
+VAL_ 234 VehAccel_X_LDC_Stat 3 "Description for the value '0x3'" 2 "INACTIVE" 1 "SATURATE" 0 "NORMAL" ;
+VAL_ 234 VehAccel_X_Dsabl_Rq_ESP 3 "Description for the value '0x3'" 2 "CONT_DSABL" 1 "TMP_DSABL" 0 "IDLE" ;
+VAL_ 152 VehSp_Stat 3 "Description for the value '0x3'" 2 "VEH_SP_DTCT" 1 "VEH_SP_NOT_DTCT" 0 "VOID" ;
+VAL_ 152 VehDrvDir_Stat 3 "Description for the value '0x3'" 2 "BACKWARD" 1 "FORWARD" 0 "VOID" ;
+VAL_ 152 VehSpd_X_Qual 3 "Description for the value '0x3'" 2 "PHYS_LIM" 1 "Normal operation" 0 "Limited signal generation" ;
+
