@@ -26,8 +26,6 @@ variables
   float VehSpeedPhys_B;
   int VehSpeedRaw_B;
   int VehSpeedRaw_J;
-  /*SteerWheelAngle Variables*/
-
 }
 
 void attribut_msg(message*m,int chn, int dlc, dword ID)
@@ -45,11 +43,11 @@ on message VehSpd_X_AR2
   BenzFactor = 0.1;
   BenzOffset = 0.0;
   J1939Offset = 0.0;
-  VehSpeedRaw_B = this.VehSpd_X; // get the row value of Benz
+  VehSpeedRaw_B = this.VehSpd_X; // get the raw value of Benz
   //Write("VehspeedRaw: %d", VehSpeedRaw_B);
   VehSpeedPhys_B = BenzFactor*VehSpeedRaw_B + BenzOffset; // calculate the Benz phys value hier km/h
   //Write("VehspeedPhys: %f", VehSpeedPhys_B);
-  VehSpeedRaw_J = (VehSpeedPhys_B-J1939Offset)/J1939Factor; // calculate row value of J1939
+  VehSpeedRaw_J = (VehSpeedPhys_B-J1939Offset)/J1939Factor; // calculate raw value of J1939
   //Write("VehspeedRaw J1939: %X", VehSpeedRaw_J);
   attribut_msg(m,2,this.dlc, 0xCFE6C17);
   m.byte(6) = 0x00FF & VehSpeedRaw_J;
