@@ -1,0 +1,55 @@
+/*@!Encoding:936*/
+includes
+{
+  
+}
+
+variables
+{
+  message CAN2.*m;
+  int size=2;
+  dword IDList[2] = {0x14FEF100};
+  int i;
+  enum falg {true = 1,false = 0};
+}
+
+/*on message CAN1.*
+{  
+   enum falg state;
+   state = true;
+   if(this.CAN==1 & this.dlc!=0)
+   {
+      for(i = 0;i<size;i++){
+        if(mkExtId(this.id) == mkExtId(IDList[i]))
+        {
+          state = false;
+        }
+      }
+      write("status %s", state.name());
+      if(state == true)
+      {
+        m= this;
+        write("channel %d, %X", m.can,m.ID);
+        output(m);
+      }
+
+   }
+}*/
+
+on message CAN1.*
+{  
+      if(mkExtId(this.ID) == mkExtId(0x14FEF100))
+      {
+        m= this;
+        write("channel %d, %X", m.can,m.ID);
+        output(m);
+      }
+}
+
+/*
+on message CAN2.*
+{
+  m = this;
+  write("channel %d, %X", m.can,m.ID);
+  output(m);      
+}*/
