@@ -32,7 +32,7 @@ void attribut_msg(message*m,int chn, int dlc, dword ID)
   m.id = mkExtId(ID); // assign message ID
 }
 /************************************************************** 
-convert VehSpeed signal of Benz to J1939 TachographVehicleSpeed
+convert VehSpeed signal of Benz to J1939 WheelBasedVehicleSpeed
 ***************************************************************/
 on message VehSpd_X_AR2
 {
@@ -46,9 +46,9 @@ on message VehSpd_X_AR2
   //Write("VehspeedPhys: %f", VehSpeedPhys_B);
   VehSpeedRaw_J = (VehSpeedPhys_B-J1939Offset)/J1939Factor; // calculate raw value of J1939
   //Write("VehspeedRaw J1939: %X", VehSpeedRaw_J);
-  attribut_msg(m,2,this.dlc, 0xCFE6C17);
-  m.byte(6) = 0x00FF & VehSpeedRaw_J;
-  m.byte(7) = (0xFF00 & VehSpeedRaw_J) >> 8;
+  attribut_msg(m,2,this.dlc, 0x18FEF1FE);
+  m.byte(1) = 0x00FF & VehSpeedRaw_J;
+  m.byte(2) = (0xFF00 & VehSpeedRaw_J) >> 8;
   output(m);
 }
 /*****************************End*****************************/
@@ -56,7 +56,7 @@ on message VehSpd_X_AR2
 
 /************************************************************** 
 convert StWheel signal of Benz to J1939 Steering of wheel
-***************************************************************/
+
 on message StWhl_Angl_Stat_AR2
 {
   J1939Factor = 0.00097654657225119;
@@ -75,7 +75,6 @@ on message StWhl_Angl_Stat_AR2
   output(m);
 }
 /*****************************End*****************************/
-
 /*
 on message CAN1.* // Called when a message received on CAN1
 {
