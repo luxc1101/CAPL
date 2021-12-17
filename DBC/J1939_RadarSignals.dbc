@@ -3787,7 +3787,6 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ CenterStopLight : 0|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ BackUpLightAndAlarmHorn : 0|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ LeftTurnSignalLights : 0|2@1+ (1,0) [0|3] "" Vector__XXX
- SG_ RightTurnSignalLights : 0|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ RotatingBeaconLight : 0|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ TractorFrontFogLights : 0|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ HighBeamHeadLightData : 0|2@1+ (1,0) [0|3] "" Vector__XXX
@@ -3877,6 +3876,9 @@ BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
  SG_ CruiseCtrlPauseSwitch : 0|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ ParkingBrakeSwitch : 0|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ TwoSpeedAxleSwitch : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 2566799614 LD: 8 Vector__XXX
+ SG_ RightTurnSignalLights : 12|2@1+ (1,0) [0|3] "" Vector__XXX
 
 BO_ 2566844926 CCVS: 8 Vector__XXX
  SG_ WheelBasedVehicleSpeed : 8|16@1+ (0.0039062485409696,0) [0|250.996] "km/h" Vector__XXX
@@ -7156,7 +7158,6 @@ CM_ SG_ 3221225472 RightStopLight "This parameter provides measured data from th
 CM_ SG_ 3221225472 CenterStopLight "This parameter provides measured data from the tractor and attached implement center stop lights.";
 CM_ SG_ 3221225472 BackUpLightAndAlarmHorn "This parameter provides measured data from the back up lights and/ or associated alarm.";
 CM_ SG_ 3221225472 LeftTurnSignalLights "This parameter provides measured data from the tractor and attached implement left turn signal lights.";
-CM_ SG_ 3221225472 RightTurnSignalLights "This parameter provides measured data from the tractor and attached implement right turn signal lights.";
 CM_ SG_ 3221225472 RotatingBeaconLight "This parameter provides measured data from the beacon light on tractor or attached implements.";
 CM_ SG_ 3221225472 TractorFrontFogLights "This parameter provides measured data from the tractor front fog lights.";
 CM_ SG_ 3221225472 HighBeamHeadLightData "This parameter provides measured data from the tractor high beam head light lamps.";
@@ -7245,6 +7246,8 @@ CM_ SG_ 3221225472 ParkBrakeReleaseInhibitRq "Park Brake Release Inhibit Request
 CM_ SG_ 3221225472 CruiseCtrlPauseSwitch "Switch signal which indicates the position of the Cruise Control Pause Switch used on Remote Cruise Control";
 CM_ SG_ 3221225472 ParkingBrakeSwitch "Switch signal which indicates when the parking brake is set. In general the switch actuated by the operator's park brake";
 CM_ SG_ 3221225472 TwoSpeedAxleSwitch "Switch signal which indicates the current axle range.";
+CM_ BO_ 2566799614 "This lighting message is a response to the request for lighting data in the lighting command message. Each lighting";
+CM_ SG_ 2566799614 RightTurnSignalLights "This parameter provides measured data from the tractor and attached implement right turn signal lights.";
 CM_ SG_ 2565865739 BrakePedalPos "Ratio of brake pedal position to maximum pedal position. Used for electric brake applications. 0% means no braking.";
 CM_ SG_ 2565865739 EBSBrakeSwitch "Switch signal which indicates that the brake pedal is being pressed. The EBS brake switch is independent of the brake";
 CM_ SG_ 2364539687 AccelPedalPos1 "The ratio of actual position of the analog engine speed/torque request input device (such as an accelerator pedal or";
@@ -7582,6 +7585,7 @@ BA_ "NmJ1939IndustryGroup" BU_ Engine1 0;
 BA_ "NmJ1939System" BU_ Engine1 0;
 BA_ "NmJ1939Function" BU_ Engine1 0;
 BA_ "NmJ1939FunctionInstance" BU_ Engine1 0;
+BA_ "VFrameFormat" BO_ 2566799614 1;
 BA_ "GenMsgCycleTime" BO_ 2566844926 100;
 BA_ "VFrameFormat" BO_ 2566844926 1;
 BA_ "GenMsgSendType" BO_ 2566844926 0;
@@ -17134,9 +17138,6 @@ BA_ "SAEDocument" SG_ 3221225472 BackUpLightAndAlarmHorn "J1939-71";
 BA_ "SigType" SG_ 3221225472 LeftTurnSignalLights 4;
 BA_ "SPN" SG_ 3221225472 LeftTurnSignalLights 2368;
 BA_ "SAEDocument" SG_ 3221225472 LeftTurnSignalLights "J1939-71";
-BA_ "SigType" SG_ 3221225472 RightTurnSignalLights 4;
-BA_ "SPN" SG_ 3221225472 RightTurnSignalLights 2370;
-BA_ "SAEDocument" SG_ 3221225472 RightTurnSignalLights "J1939-71";
 BA_ "SigType" SG_ 3221225472 RotatingBeaconLight 4;
 BA_ "SPN" SG_ 3221225472 RotatingBeaconLight 2386;
 BA_ "SAEDocument" SG_ 3221225472 RotatingBeaconLight "J1939-71";
@@ -17401,6 +17402,9 @@ BA_ "SAEDocument" SG_ 3221225472 ParkingBrakeSwitch "J1939-71";
 BA_ "SigType" SG_ 3221225472 TwoSpeedAxleSwitch 4;
 BA_ "SPN" SG_ 3221225472 TwoSpeedAxleSwitch 69;
 BA_ "SAEDocument" SG_ 3221225472 TwoSpeedAxleSwitch "J1939-71";
+BA_ "SigType" SG_ 2566799614 RightTurnSignalLights 4;
+BA_ "SPN" SG_ 2566799614 RightTurnSignalLights 2370;
+BA_ "SAEDocument" SG_ 2566799614 RightTurnSignalLights "J1939-71";
 BA_ "SigType" SG_ 2565865739 BrakePedalPos 1;
 BA_ "SPN" SG_ 2565865739 BrakePedalPos 521;
 BA_ "SAEDocument" SG_ 2565865739 BrakePedalPos "J1939-71";
@@ -19046,7 +19050,6 @@ VAL_ 3221225472 RightStopLight 3 "Not Available" 2 "Fault Detected" 1 "Activated
 VAL_ 3221225472 CenterStopLight 3 "Not Available" 2 "Fault Detected" 1 "Activated" 0 "Deactivated" ;
 VAL_ 3221225472 BackUpLightAndAlarmHorn 3 "Not Available" 2 "Fault Detected" 1 "Activated" 0 "Deactivated" ;
 VAL_ 3221225472 LeftTurnSignalLights 3 "Not Available" 2 "Fault Detected" 1 "Activated" 0 "Deactivated" ;
-VAL_ 3221225472 RightTurnSignalLights 3 "Not Available" 2 "Fault Detected" 1 "Activated" 0 "Deactivated" ;
 VAL_ 3221225472 RotatingBeaconLight 3 "Not Available" 2 "Fault Detected" 1 "Activated" 0 "Deactivated" ;
 VAL_ 3221225472 TractorFrontFogLights 3 "Not Available" 2 "Fault Detected" 1 "Activated" 0 "Deactivated" ;
 VAL_ 3221225472 HighBeamHeadLightData 3 "Not Available" 2 "Fault Detected" 1 "Activated" 0 "Deactivated" ;
@@ -19112,6 +19115,7 @@ VAL_ 3221225472 ParkBrakeReleaseInhibitRq 3 "Unavailable" 2 "SAEReserved" 1 "Par
 VAL_ 3221225472 CruiseCtrlPauseSwitch 3 "Take No Action" 2 "Error Indicator" 1 "On" 0 "Off" ;
 VAL_ 3221225472 ParkingBrakeSwitch 3 "Not available" 2 "Error" 1 "Parking brake set" 0 "Parking brake not set" ;
 VAL_ 3221225472 TwoSpeedAxleSwitch 3 "Not available" 2 "Error" 1 "High speed range" 0 "Low speed range" ;
+VAL_ 2566799614 RightTurnSignalLights 3 "Not Available" 2 "Fault Detected" 1 "Activated" 0 "Deactivated" ;
 VAL_ 2565865739 EBSBrakeSwitch 3 "Not available" 2 "Error" 1 "Brake pedal is being pressed" 0 "Brake pedal is not being pressed" ;
 VAL_ 2565867787 SteerWheelAngleSensorType 3 "Not Available" 2 "Reserved" 1 "Absolute measuring principle" 0 "Relative measuring principle" ;
 

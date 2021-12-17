@@ -9,7 +9,12 @@ includes
 
 variables
 {
-  message CAN2.*m;
+  //message CAN2.*m;
+  message CCVS WheelSpeed;
+  message LD Lighting;
+  //message SCCM_Sw_Stat_AR2 TurnLight;
+  msTimer timer1;
+  int isTurn = -1;
   float BenzFactor;
   float BenzOffset;
   float J1939Factor;
@@ -18,10 +23,10 @@ variables
   float VehSpeedPhys_B;
   int VehSpeedRaw_B;
   int VehSpeedRaw_J;
-  /*SteerWheelAngle variables*/
+  /*SteerWheelAngle variables
   float StWhlPhys_B;
   int StWhlRaw_B;
-  int StWhlRaw_J;
+  int StWhlRaw_J;*/
 
 }
 
@@ -37,6 +42,7 @@ convert VehSpeed signal of Benz to J1939 WheelBasedVehicleSpeed
 on message VehSpd_X_AR2
 {
   J1939Factor = 0.0039062485409696;
+  J1939Offset = 0.0;
   BenzFactor = 0.1;
   BenzOffset = 0.0;
   J1939Offset = 0.0;
@@ -46,17 +52,88 @@ on message VehSpd_X_AR2
   //Write("VehspeedPhys: %f", VehSpeedPhys_B);
   VehSpeedRaw_J = (VehSpeedPhys_B-J1939Offset)/J1939Factor; // calculate raw value of J1939
   //Write("VehspeedRaw J1939: %X", VehSpeedRaw_J);
-  attribut_msg(m,2,this.dlc, 0x18FEF1FE);
-  m.byte(1) = 0x00FF & VehSpeedRaw_J;
-  m.byte(2) = (0xFF00 & VehSpeedRaw_J) >> 8;
-  output(m);
+  attribut_msg(WheelSpeed,2,this.dlc, 0x18FEF1FE);
+  WheelSpeed.byte(1) = 0x00FF & VehSpeedRaw_J;
+  WheelSpeed.byte(2) = (0xFF00 & VehSpeedRaw_J) >> 8;
+  output(WheelSpeed);
+
 }
 /*****************************End*****************************/
+/************************************************************** 
+manuel send Turn light message
+***************************************************************/
+On key 'r'
+{
+  isTurn = 1;
+}
 
+On key 's'
+{
+  isTurn = 0;
+}
+On key 'o'
+{
+  isTurn = -1;
+}
 
+On timer timer1
+{
+  if(isTurn == 1)
+  {
+    message SCCM_Sw_Stat_AR2 msg;
+    msg.byte(1) = 0x10 | msg.byte(1);
+    output(msg);
+  }
+  if(isTurn == 0)
+  {
+    message SCCM_Sw_Stat_AR2 msg;
+    msg.byte(1) = 0x00 | msg.byte(1);
+    output(msg);
+  }
+  if(isTurn == -1)
+  {
+    message SCCM_Sw_Stat_AR2 msg;
+    output(msg);
+  }
+  settimer(timer1,1);
+}
+
+on start
+{
+    settimer(timer1,1);
+}
+/*****************************End*****************************/
+/************************************************************** 
+Convert TurnIndLvr_Stat to J1939 RightTurnSignalLights
+***************************************************************/
+on message SCCM_Sw_Stat_AR2
+{
+  attribut_msg(Lighting,2,this.dlc, 0x18FE40FE);
+  write("Benz %X", this.byte(1));
+  Lighting.byte(1) = this.byte(1);
+  output(Lighting);
+}
+/*****************************End*****************************/
+/************************************************************** 
+I/O Port convert digital to analog signal
+***************************************************************/
+on message LD
+{
+  int RTunsignal;
+  RTunsignal = this.RightTurnSignalLights;
+  write("1939 %x",RTunsignal);
+  if (RTunsignal == 1)
+  {
+    @sysvar::IO::VN5620_1::AOUT = 1; // Set 13 V analog siganl
+  }
+  else
+  {
+    @sysvar::IO::VN5620_1::AOUT = 0; // Set 0 V analog signal
+  }
+ }
+/*****************************End*****************************/
 /************************************************************** 
 convert StWheel signal of Benz to J1939 Steering of wheel
-
 on message StWhl_Angl_Stat_AR2
 {
   J1939Factor = 0.00097654657225119;
