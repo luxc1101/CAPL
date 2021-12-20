@@ -14,7 +14,7 @@ variables
   message LD Lighting;
   //message SCCM_Sw_Stat_AR2 TurnLight;
   msTimer timer1;
-  int isTurn = -1;
+  int isTurn;
   float BenzFactor;
   float BenzOffset;
   float J1939Factor;
@@ -62,18 +62,23 @@ on message VehSpd_X_AR2
 /************************************************************** 
 manuel send Turn light message
 ***************************************************************/
-On key 'r'
+On key 'r' // turn right
 {
   isTurn = 1;
 }
 
-On key 's'
+On key 'l' // turn left
+{
+  isTurn = -1;
+}
+
+On key 's' // go straight
 {
   isTurn = 0;
 }
-On key 'o'
+On key 'o' // orignal
 {
-  isTurn = -1;
+  isTurn = 2;
 }
 
 On timer timer1
@@ -81,16 +86,22 @@ On timer timer1
   if(isTurn == 1)
   {
     message SCCM_Sw_Stat_AR2 msg;
-    msg.byte(1) = 0x20 | msg.byte(1);
+    msg.TurnIndLvr_Stat = 2;
+    output(msg);
+  }
+  if(isTurn == -1)
+  {
+    message SCCM_Sw_Stat_AR2 msg;
+    msg.TurnIndLvr_Stat = 1;
     output(msg);
   }
   if(isTurn == 0)
   {
     message SCCM_Sw_Stat_AR2 msg;
-    msg.byte(1) = 0x00 | msg.byte(1);
+    msg.TurnIndLvr_Stat = 0;
     output(msg);
   }
-  if(isTurn == -1)
+  if(isTurn == 2)
   {
     message SCCM_Sw_Stat_AR2 msg;
     output(msg);
@@ -109,12 +120,18 @@ Convert TurnIndLvr_Stat to J1939 RightTurnSignalLights
 on message SCCM_Sw_Stat_AR2
 {
   attribut_msg(Lighting,2,this.dlc, 0x18FE40FE);
-  write("Benz %X", this.byte(1));
-  if(this.byte(1) & 0x20 == 2)
+  write("Benz %X", this.TurnIndLvr_Stat);
+  if((this.TurnIndLvr_Stat == 1)|(this.TurnIndLvr_Stat == 0))
   {
-    Lighting.byte(1) = 0x10;
-    output(Lighting);
+    write("Turn Left or straight %X", Lighting.byte(1) & 0x00);
+    Lighting.byte(1) = 0x00;
   }
+  if(this.TurnIndLvr_Stat == 2)
+  {
+    write("Turn right %X", Lighting.byte(1) & 0x10);
+    Lighting.byte(1) = 0x10;
+  }
+  output(Lighting);
 }
 /*****************************End*****************************/
 /************************************************************** 
