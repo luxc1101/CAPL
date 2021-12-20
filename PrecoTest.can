@@ -81,7 +81,7 @@ On timer timer1
   if(isTurn == 1)
   {
     message SCCM_Sw_Stat_AR2 msg;
-    msg.byte(1) = 0x10 | msg.byte(1);
+    msg.byte(1) = 0x20 | msg.byte(1);
     output(msg);
   }
   if(isTurn == 0)
@@ -110,8 +110,11 @@ on message SCCM_Sw_Stat_AR2
 {
   attribut_msg(Lighting,2,this.dlc, 0x18FE40FE);
   write("Benz %X", this.byte(1));
-  Lighting.byte(1) = this.byte(1);
-  output(Lighting);
+  if(this.byte(1) & 0x20 == 2)
+  {
+    Lighting.byte(1) = 0x10;
+    output(Lighting);
+  }
 }
 /*****************************End*****************************/
 /************************************************************** 
