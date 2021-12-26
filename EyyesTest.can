@@ -97,6 +97,7 @@ On key*
     case 'l': isTurn = -1; break; // turn left
     case 's': isTurn = 0; break; // go straight
     case 'c': isTurn = 2; break; // og
+    default : write("You have to press: 'r' for turn right; 'l' for turn left; 's' for go straight; 'c' for cancel"); break;
   }
   settimer(timer1,1);
 }
