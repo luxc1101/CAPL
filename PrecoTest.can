@@ -62,74 +62,54 @@ on message VehSpd_X_AR2
 /************************************************************** 
 manuel send Turn light message
 ***************************************************************/
-On key 'r' // turn right
+On key*
 {
-  isTurn = 1;
-}
-
-On key 'l' // turn left
-{
-  isTurn = -1;
-}
-
-On key 's' // go straight
-{
-  isTurn = 0;
-}
-On key 'o' // orignal
-{
-  isTurn = 2;
-}
-
-On timer timer1
-{
-  if(isTurn == 1)
+  switch(this)
   {
-    message SCCM_Sw_Stat_AR2 msg;
-    msg.TurnIndLvr_Stat = 2;
-    output(msg);
-  }
-  if(isTurn == -1)
-  {
-    message SCCM_Sw_Stat_AR2 msg;
-    msg.TurnIndLvr_Stat = 1;
-    output(msg);
-  }
-  if(isTurn == 0)
-  {
-    message SCCM_Sw_Stat_AR2 msg;
-    msg.TurnIndLvr_Stat = 0;
-    output(msg);
-  }
-  if(isTurn == 2)
-  {
-    message SCCM_Sw_Stat_AR2 msg;
-    output(msg);
+    case 'r': isTurn = 1; break; // turn right
+    case 'l': isTurn = -1; break; // turn left
+    case 's': isTurn = 0; break; // go straight
+    case 'c': isTurn = 2; break; // og
   }
   settimer(timer1,1);
 }
-
-on start
+On timer timer1
 {
-    settimer(timer1,1);
+  message SCCM_Sw_Stat_AR2 msg;
+  if(isTurn == 1) // turn right
+  {
+    msg.TurnIndLvr_Stat = 2;
+    output(msg);
+  }
+  if(isTurn == -1) // turn left
+  {
+    msg.TurnIndLvr_Stat = 1;
+    output(msg);
+  }
+  if(isTurn == 0) // go straight
+  {
+    msg.TurnIndLvr_Stat = 0;
+    output(msg);
+  }
+  if(isTurn == 2) // cancel timer
+  {
+    cancelTimer(timer1);
+  }
+  settimer(timer1,1);
 }
 /*****************************End*****************************/
 /************************************************************** 
-Convert TurnIndLvr_Stat to J1939 RightTurnSignalLights
+Convert TurnIndLvr_Stat to J1939 RightTurnSignalLights and LeftTurnSignalLights
 ***************************************************************/
-on message SCCM_Sw_Stat_AR2
+On message SCCM_Sw_Stat_AR2
 {
-  attribut_msg(Lighting,2,this.dlc, 0x18FE40FE);
-  write("Benz %X", this.TurnIndLvr_Stat);
-  if((this.TurnIndLvr_Stat == 1)|(this.TurnIndLvr_Stat == 0))
+  attribut_msg(Lighting,2,this.dlc,0x18FE40FE);
+  write("Benz Turn %X", this.TurnIndLvr_Stat);
+  switch(this.TurnIndLvr_Stat)
   {
-    write("Turn Left or straight %X", Lighting.byte(1) & 0x00);
-    Lighting.byte(1) = 0x00;
-  }
-  if(this.TurnIndLvr_Stat == 2)
-  {
-    write("Turn right %X", Lighting.byte(1) & 0x10);
-    Lighting.byte(1) = 0x10;
+    case 1: Lighting.byte(1) = 0x40;break;
+    case 2: Lighting.byte(1) = 0x10;break;
+    case 0: Lighting.byte(1) = 0x00;break;  
   }
   output(Lighting);
 }
@@ -144,16 +124,15 @@ on message LD
   write("1939 %x",RTunsignal);
   if (RTunsignal == 1)
   {
-    @sysvar::IO::VN5620_1::AOUT = 1; // Set 13 V analog siganl
+    @sysvar::IO::VN5620_1::DOUT = 1; // Set 13 V analog siganl
   }
   else
   {
-    @sysvar::IO::VN5620_1::AOUT = 0; // Set 0 V analog signal
+    @sysvar::IO::VN5620_1::DOUT = 0; // Set 0 V analog signal
   }
  }
 /*****************************End*****************************/
 /************************************************************** 
-convert StWheel signal of Benz to J1939 Steering of wheel
 on message StWhl_Angl_Stat_AR2
 {
   J1939Factor = 0.00097654657225119;
@@ -162,14 +141,16 @@ on message StWhl_Angl_Stat_AR2
   J1939Offset = -31.374;
   StWhlRaw_B = this.StWhl_Angl; // get the row value of Benz
   //Write("StWhlRaw: %d",StWhlRaw_B);
-  StWhlPhys_B= BenzFactor*StWhlRaw_B + BenzOffset; // calculate the Benz phys value hier rad
+  StWhlPhys_B= (BenzFactor*StWhlRaw_B + BenzOffset)*(PI/180); // calculate the Benz phys value hier rad
   //Write("StWhlPhys_B: %f", StWhlRaw_B);
   StWhlRaw_J = (StWhlPhys_B-J1939Offset)/J1939Factor; // calculate raw value of J1939
   //Write("StWhlRaw J1939: %X", StWhlRaw_J);
-  attribut_msg(m,2,this.dlc, 0x18F0090B);
-  m.byte(0) = 0x00FF & StWhlRaw_J;
-  m.byte(1) = (0xFF00 & StWhlRaw_J) >> 8;
-  output(m);
+  attribut_msg(Movement,2,this.dlc, 0x18F0090B);
+  Movement.byte(0) = 0x00FF & StWhlRaw_J;
+  Movement.byte(1) = (0xFF00 & StWhlRaw_J) >> 8;
+  Write("Benz Phys degree: %f", this.StWhl_Angl.phys);
+  Write("J1939 Phys degree: %f", Movement.SteerWheelAngle.phys*(180/PI));
+  output(Movement);
 }
 /*****************************End*****************************/
 /*
