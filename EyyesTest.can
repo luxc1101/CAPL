@@ -37,6 +37,23 @@ void attribut_msg(message*m,int chn, int dlc, dword ID)
   m.dlc = dlc; // assign dlc
   m.id = mkExtId(ID); // assign message ID
 }
+InfoText()
+{
+  write("");
+  write("----------------------");
+  write("You have to press:"); 
+  write("<r> turn right"); 
+  write("<l> turn left"); 
+  write("<s> go straight"); 
+  write("<c> cancel");
+  write("----------------------");
+}
+On start
+{
+  writeClear(1);
+  InfoText();
+}
+
 /************************************************************** 
 convert VehSpeed signal of Benz to J1939 WheelBasedVehicleSpeed
 ***************************************************************/
@@ -93,13 +110,11 @@ On key*
 {
   switch(this)
   {
-    case 'r': isTurn = 1; break; // turn right
-    case 'l': isTurn = -1; break; // turn left
-    case 's': isTurn = 0; break; // go straight
-    case 'c': isTurn = 2; break; // og
-    default : write("You have to press: 'r' for turn right; 'l' for turn left; 's' for go straight; 'c' for cancel"); break;
+    case 'r': isTurn = 1; settimer(timer1,1); break; // turn right
+    case 'l': isTurn = -1; settimer(timer1,1); break; // turn left
+    case 's': isTurn = 0; settimer(timer1,1); break; // go straight
+    case 'c': isTurn = 2; settimer(timer1,1); break; // og
   }
-  settimer(timer1,1);
 }
 On timer timer1
 {

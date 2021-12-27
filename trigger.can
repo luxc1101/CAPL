@@ -1,0 +1,34 @@
+/*@!Encoding:1252*/
+variables 
+{
+  char path[1000] = "C:/Autel/Doc/Data/CAN_ASC/Test/";
+  char filename[1000] = "Test_{Date}_{IncSize|000|100MB}.asc";
+}
+
+on message *
+{
+  if(this.dlc != 0)
+  {
+    output(this);
+  }
+}
+
+on key 'a'
+{
+  write("Logging stopped.");
+  stopLogging();
+}
+
+on key 'e'
+{
+  write("Logging actived.");
+  startLogging();
+}
+on start
+{
+  strncat(path,filename,2000);
+  Write("----------------------------------------");
+  Write("<e>,<a>: start/stops the logging");
+  Write("----------------------------------------");
+  setLogFileName(path);
+}
