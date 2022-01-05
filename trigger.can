@@ -22,13 +22,14 @@ on key 'a'
 on key 'e'
 {
   write("Logging actived.");
+  trigger();
   startLogging();
 }
 on start
 {
   strncat(path,filename,2000);
   Write("----------------------------------------");
-  Write("<e>,<a>: start/stops the logging");
+  Write("<e>/<a>: start/stops the logging");
   Write("----------------------------------------");
   setLogFileName(path);
 }

@@ -1,0 +1,146 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  /*CAN1*/
+  message CCVS WheelSpeed;
+  message LD Lighting;
+  message VDC2 Movement;
+  message TCO1 Tacho;
+  int UnitRaws;
+  /*Timer*/
+  msTimer timer1;
+  msTimer timer2;
+  msTimer timer3;
+  /*factor offset*/
+  float J1939Factor;
+  float J1939Offset;
+  /*VehSpeed variables*/
+  int VehSpeedRaw;
+  int maxSpeed = 40; // km/h 
+  int minSpeed = 0; // km/h
+  /*SteerWheelAngle variables*/
+  int StWhlRaw;
+  int maxAngle = 13; // rad
+  int minAngle = -13; // rad
+  int i = 0;
+  float j = 0.0;
+}
+
+void attribut_msg(message*m,int chn, int dlc, dword ID)
+{
+  m.can = chn; // assign channel 
+  m.dlc = dlc; // assign dlc
+  m.id = mkExtId(ID); // assign message ID
+}
+
+int PhysToRawUnit(float factor,float UnitPhys) 
+{
+  UnitRaws = UnitPhys/factor; // caculate unit physdata to rawdata
+  return UnitRaws;
+}
+  
+InfoText()
+{
+  write("");
+  write("----------------------------------------");
+  write("You have to press:"); 
+  write("<r>: turn right;"); 
+  write("<l>: turn left;"); 
+  write("<w>: accelerate (max: 30 km/h);");
+  write("<s>: brake (min: 0 km/h);");
+  write("<a>: steel wheel angle left(max: PI/6);");
+  write("<d>: steel wheel angle right(max: PI/6);");
+  write("<s>: brake (max: 0 km/h);");
+  write("<c>: cancel timer;");
+  write("----------------------------------------");
+}
+
+On start
+{
+  writeClear(1);
+  InfoText();
+  attribut_msg(Tacho,1,Tacho.dlc,0xCFE6C17);
+  Tacho.TachographVehicleSpeed = 0x0000; // Init Tachospeed
+  attribut_msg(Movement,1,Movement.dlc,0x18F0090B);
+  Movement.SteerWheelAngle = 0x7D7D; // Init SteerWheelAngle
+  attribut_msg(Lighting,1, Lighting.dlc, 0x18FE40FE);
+  Lighting.RightTurnSignalLights = 0x0; // Init turn signal right
+  Lighting.LeftTurnSignalLights = 0x0; // Init turn signal left
+  settimer(timer1,Tacho.GenMsgCycleTime);
+  settimer(timer2,Movement.GenMsgCycleTime); 
+  settimer(timer3,500); 
+}
+On timer timer1
+{
+  output(Tacho);
+  settimer(timer1,Tacho.GenMsgCycleTime);
+}
+
+On timer timer2
+{
+  output(Movement);
+  settimer(timer2, Movement.GenMsgCycleTime);
+}
+
+On timer timer3
+{
+  output(Lighting);
+  settimer(timer3,500);
+}
+
+On key 'w' // Accelation
+{
+  VehSpeedRaw = PhysToRawUnit(0.0039062485409696,1.0);
+  if(i < maxSpeed)
+  {
+    i+=1;
+    //write("%d",i);
+    Tacho.TachographVehicleSpeed+=VehSpeedRaw;
+    write("Tachospeed: %f km/h",Tacho.TachographVehicleSpeed.phys);
+  }
+}
+
+On key 's' // Break
+{
+  VehSpeedRaw = PhysToRawUnit(0.0039062485409696,1.0);
+  if(i > minSpeed)
+  {
+    i-=1;
+    //write("%d",i);
+    Tacho.TachographVehicleSpeed-=VehSpeedRaw;
+    write("Tachospeed: %f km/h",Tacho.TachographVehicleSpeed.phys);
+  }
+}
+
+On key 'a' // Turn left
+{
+  StWhlRaw = PhysToRawUnit(0.00097654657225119,PI*10/180); // (PI*10/180) rad/10degree
+  if(j < maxAngle)
+  {
+    j+=(PI*10/180);
+    //write("%f",j);
+    Movement.SteerWheelAngle+=StWhlRaw;
+    write("SteerWheelAngle: %f degree", Movement.SteerWheelAngle.phys*180/PI);
+  }
+}
+
+On key 'd' // Turn right
+{
+  StWhlRaw = PhysToRawUnit(0.00097654657225119,PI*10/180); // (PI*10/180) rad/10degree
+  if(j > minAngle)
+  {
+    j-=(PI*10/180);
+    //write("%f",j);
+    Movement.SteerWheelAngle-=StWhlRaw;
+    write("SteerWheelAngle: %f degree", Movement.SteerWheelAngle.phys*180/PI);
+  }
+}
+
+
+
+

@@ -6,7 +6,6 @@ includes
 {
   
 }
-
 variables
 {
   //message CAN2.*m;
@@ -27,9 +26,7 @@ variables
   float StWhlPhys_B;
   int StWhlRaw_B;
   int StWhlRaw_J;*/
-
 }
-
 void attribut_msg(message*m,int chn, int dlc, dword ID)
 {
   m.can = chn; // assign channel 
@@ -48,7 +45,6 @@ InfoText()
   write("<c> cancel");
   write("----------------------");
 }
-
 On start
 {
   writeClear(1);
@@ -88,7 +84,7 @@ On key*
     case 'r': isTurn = 1; settimer(timer1,1); break; // turn right
     case 'l': isTurn = -1; settimer(timer1,1); break; // turn left
     case 's': isTurn = 0; settimer(timer1,1); break; // go straight
-    case 'c': isTurn = 2; settimer(timer1,1); break; // og
+    case 'c': cancelTimer(timer1); break; // cancel
   }
 }
 
@@ -109,10 +105,6 @@ On timer timer1
   {
     msg.TurnIndLvr_Stat = 0;
     output(msg);
-  }
-  if(isTurn == 2) // cancel timer
-  {
-    cancelTimer(timer1);
   }
   settimer(timer1,1);
 }
@@ -150,7 +142,7 @@ on message LD
     @sysvar::IO::VN5620_1::DOUT = 0; // Set 0 V analog signal
   }
  }
-/*****************************End*****************************/
+/*****************************End*****************************/ 
 /************************************************************** 
 on message StWhl_Angl_Stat_AR2
 {

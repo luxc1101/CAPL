@@ -98,8 +98,8 @@ on message StWhl_Angl_Stat_AR2
   attribut_msg(Movement,2,this.dlc, 0x18F0090B);
   Movement.byte(0) = 0x00FF & StWhlRaw_J;
   Movement.byte(1) = (0xFF00 & StWhlRaw_J) >> 8;
-  Write("Benz Phys degree: %f", this.StWhl_Angl.phys);
-  Write("J1939 Phys degree: %f", Movement.SteerWheelAngle.phys*(180/PI));
+  // Write("Benz Phys degree: %f", this.StWhl_Angl.phys);
+  // Write("J1939 Phys degree: %f", Movement.SteerWheelAngle.phys*(180/PI));
   output(Movement);
 }
 /*****************************End*****************************/
@@ -113,7 +113,7 @@ On key*
     case 'r': isTurn = 1; settimer(timer1,1); break; // turn right
     case 'l': isTurn = -1; settimer(timer1,1); break; // turn left
     case 's': isTurn = 0; settimer(timer1,1); break; // go straight
-    case 'c': isTurn = 2; settimer(timer1,1); break; // og
+    case 'c': cancelTimer(timer1); break; // og
   }
 }
 On timer timer1
@@ -134,10 +134,6 @@ On timer timer1
     msg.TurnIndLvr_Stat = 0;
     output(msg);
   }
-  if(isTurn == 2) // cancel timer
-  {
-    cancelTimer(timer1);
-  }
   settimer(timer1,1);
 }
 /*****************************End*****************************/
@@ -147,7 +143,7 @@ Convert TurnIndLvr_Stat to J1939 RightTurnSignalLights and LeftTurnSignalLights 
 On message SCCM_Sw_Stat_AR2
 {
   attribut_msg(Lighting,2,this.dlc,0x18FE40FE);
-  write("Benz Turn %X", this.TurnIndLvr_Stat);
+  // write("Benz Turn %X", this.TurnIndLvr_Stat);
   switch(this.TurnIndLvr_Stat)
   {
     case 1: Lighting.byte(1) = 0x40;break;
@@ -166,7 +162,7 @@ on message LD
   int LTurnsignal;
   RTurnsignal = this.RightTurnSignalLights;
   LTurnsignal = this.LeftTurnSignalLights;
-  write("J1939 RighTurn %x",RTurnsignal);
+  // write("J1939 RighTurn %x",RTurnsignal);
   if (RTurnsignal == 1)
   {
     @sysvar::IO::VN5620_1::DOUT = 1; // Set 13 V analog siganl
