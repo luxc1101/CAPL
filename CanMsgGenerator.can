@@ -51,10 +51,10 @@ InfoText()
   write("You have to press:"); 
   write("<r>: turn right;"); 
   write("<l>: turn left;"); 
-  write("<w>: accelerate (max: 30 km/h);");
+  write("<w>: accelerate (max: %d km/h);", maxSpeed);
   write("<s>: brake (min: 0 km/h);");
-  write("<a>: steel wheel angle left(max: PI/6);");
-  write("<d>: steel wheel angle right(max: PI/6);");
+  write("<a>: steel wheel angle left(max: %d rad);",maxAngle);
+  write("<d>: steel wheel angle right(min: %d rad);",minAngle);
   write("<s>: brake (max: 0 km/h);");
   write("<c>: cancel timer;");
   write("----------------------------------------");
@@ -125,7 +125,7 @@ On key 'a' // Turn left
     j+=(PI*10/180);
     //write("%f",j);
     Movement.SteerWheelAngle+=StWhlRaw;
-    write("SteerWheelAngle: %f degree", Movement.SteerWheelAngle.phys*180/PI);
+    write("SteerWheelAngle: %f°", Movement.SteerWheelAngle.phys*180/PI);
   }
 }
 
@@ -137,10 +137,56 @@ On key 'd' // Turn right
     j-=(PI*10/180);
     //write("%f",j);
     Movement.SteerWheelAngle-=StWhlRaw;
-    write("SteerWheelAngle: %f degree", Movement.SteerWheelAngle.phys*180/PI);
+    write("SteerWheelAngle: %f°", Movement.SteerWheelAngle.phys*180/PI);
   }
 }
 
+On key 'l' // Turn left light signal
+{
+  if (Lighting.LeftTurnSignalLights == 0)
+  {
+    Lighting.LeftTurnSignalLights = 1;
+  }
+  else
+  {
+    Lighting.LeftTurnSignalLights = 0;
+  }
+  // write("leftlight %x",Lighting.LeftTurnSignalLights);
+  
+}
+
+On key 'r' // Turn right left signal
+{
+  if (Lighting.RightTurnSignalLights == 0)
+  {
+    Lighting.RightTurnSignalLights = 1;
+  }
+  else
+  {
+    Lighting.RightTurnSignalLights = 0;
+  }
+  // write("rightlight %x",Lighting.RightTurnSignalLights);
+  
+}
+/**************************************************************/ 
+/*I/O Port convert digital to analog signal*/
+/***************************************************************/
+on message LD
+{
+  int RTurnsignal;
+  int LTurnsignal;
+  RTurnsignal = this.RightTurnSignalLights;
+  LTurnsignal = this.LeftTurnSignalLights;
+  // write("J1939 RighTurn %x",RTurnsignal);
+  if (RTurnsignal == 1)
+  {
+    @sysvar::IO::VN5620_1::DOUT = 1; // Set 13 V analog siganl
+  }
+  else
+  {
+    @sysvar::IO::VN5620_1::DOUT = 0; // Set 0 V analog signal
+  }
+ }
 
 
 

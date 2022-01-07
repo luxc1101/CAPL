@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=15.2.41.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=15.2.41.0, Culture=neutral, PublicKeyToken=null" Name="Panel" Children="Controls" ControlName="PanelTest">
+    <Object Type="Vector.CANalyzer.Panels.Design.MeterControl, Vector.CANalyzer.Panels.CommonControls, Version=15.2.41.0, Culture=neutral, PublicKeyToken=null" Name="MeterControl2" ControlName="Meter 2">
+      <Property Name="Name">MeterControl2</Property>
+      <Property Name="Size">225, 180</Property>
+      <Property Name="Location">231, 16</Property>
+      <Property Name="ScaleMax">40</Property>
+      <Property Name="SweepAngleFrom">-120</Property>
+      <Property Name="SweepAngleTo">120</Property>
+      <Property Name="NeedleColor">Green</Property>
+      <Property Name="NeedleShape">TriangleWithPoint</Property>
+      <Property Name="AlarmDisplay">True</Property>
+      <Property Name="AlarmLowerLimit">0</Property>
+      <Property Name="AlarmUpperLimit">40</Property>
+      <Property Name="SymbolConfiguration">8;2;J1939_RadarSignals;;TCO1;TachographVehicleSpeed;1;CAN1;;-1;;;;;;0</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.MeterControl, Vector.CANalyzer.Panels.CommonControls, Version=15.2.41.0, Culture=neutral, PublicKeyToken=null" Name="MeterControl1" ControlName="Meter 1">
+      <Property Name="Name">MeterControl1</Property>
+      <Property Name="Size">255, 180</Property>
+      <Property Name="Location">3, 16</Property>
+      <Property Name="ScaleMin">-31</Property>
+      <Property Name="ScaleMax">31</Property>
+      <Property Name="SweepAngleFrom">-120</Property>
+      <Property Name="SweepAngleTo">120</Property>
+      <Property Name="NeedleColor">Brown</Property>
+      <Property Name="PivotDistance">6</Property>
+      <Property Name="NeedleShape">TriangleWithPoint</Property>
+      <Property Name="AlarmDisplay">True</Property>
+      <Property Name="AlarmLowerLimit">-31.374</Property>
+      <Property Name="AlarmUpperLimit">31.374</Property>
+      <Property Name="SymbolConfiguration">8;2;J1939_RadarSignals;;VDC2;SteerWheelAngle;1;CAN1;;-1;;;;;;0</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">447, 209</Property>
+    <Property Name="BackColor">229, 227, 216</Property>
+  </Object>
+</Panel>
