@@ -115,7 +115,7 @@ Convert TurnIndLvr_Stat to J1939 RightTurnSignalLights and LeftTurnSignalLights
 On message SCCM_Sw_Stat_AR2
 {
   attribut_msg(Lighting,2,this.dlc,0x18FE40FE);
-  write("Benz Turn %X", this.TurnIndLvr_Stat);
+//  write("Benz Turn %X", this.TurnIndLvr_Stat);
   switch(this.TurnIndLvr_Stat)
   {
     case 1: Lighting.byte(1) = 0x40;break;
@@ -132,7 +132,7 @@ on message LD
 {
   int RTurnsignal;
   RTurnsignal = this.RightTurnSignalLights;
-  write("1939 RighTurn %x",RTurnsignal);
+//  write("1939 RighTurn %x",RTurnsignal);
   if (RTurnsignal == 1)
   {
     @sysvar::IO::VN5620_1::DOUT = 1; // Set 13 V analog siganl
