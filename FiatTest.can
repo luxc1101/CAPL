@@ -6,21 +6,31 @@ includes
 variables
 {
   //message CAN2.*m;
+  /* Fiat */
   message Speed_ FAxleSpd;
   message SteerWheelAngle StWhl_Angl;
   message VehicleDynamicControl VDC;
+  /* J1939 */
+  message CCVS WheelSpeed;
+  message LD Lighting;
+  
   float BenzFactor;
   float BenzOffset;
   float BenzFactor1;
   float BenzOffset1;
+  
   float FiatFactor;
   float FiatOffset;
   float FiatFactor1;
   float FiatOffset1;
+  
+  float J1939Factor;
+  float J1939Offset;
   /*VehSpeed variables*/
   float VehSpeedPhys_B;
   int VehSpeedRaw_B;
   int VehSpeedRaw_F;
+  int VehSpeedRaw_J;
   /*SteerWheelAngle variables*/
   float StWhlPhys_B;
   int StWhlRaw_B;
@@ -35,6 +45,9 @@ variables
   float YawRatePhys_B;
   int YawRateRaw_B;
   int YawRateRaw_F;
+  
+  
+  
 }
 void attribut_msg(message*m,int chn, int dlc, dword ID)
 {
@@ -45,9 +58,9 @@ void attribut_msg(message*m,int chn, int dlc, dword ID)
 
 InfoText()
 {
-  write("--------------------------------------------------------------");
-  write("convert can singal of Benz E200L to can singal fo Fiat Ducato"); 
-  write("--------------------------------------------------------------");
+  write("-----------------------------------------------------------------------");
+  write("convert can singal of Benz E200L to can singal fo Fiat Ducato and J1939"); 
+  write("-----------------------------------------------------------------------");
   write("");
 }
 On start
@@ -64,16 +77,24 @@ on message VehSpd_X_AR2
   FiatOffset = 0.0;
   BenzFactor = 0.1;
   BenzOffset = 0.0;
+  J1939Factor = 0.0039062485409696;
+  J1939Offset = 0.0;
+  
   VehSpeedRaw_B = this.VehSpd_X; // get the row value of Benz
   //Write("VehspeedRaw: %d", VehSpeedRaw_B);
   VehSpeedPhys_B = BenzFactor*VehSpeedRaw_B + BenzOffset; // calculate the Benz phys value here km/h
   //Write("VehspeedPhys: %f", VehSpeedPhys_B);
   VehSpeedRaw_F = (VehSpeedPhys_B-FiatOffset)/FiatFactor; // calculate raw value of Fiat
   //Write("VehspeedRaw Fiat: %X", VehSpeedRaw_F);
+  VehSpeedRaw_J = (VehSpeedPhys_B-J1939Offset)/J1939Factor; // calculate raw value of J1939
   attribut_msg(FAxleSpd,2,this.dlc, 0xA18A006);
+  attribut_msg(WheelSpeed,2,this.dlc, 0x18FEF1FE);
   FAxleSpd.byte(2) = (0xFF00 & VehSpeedRaw_F) >>8;
   FAxleSpd.byte(3) = (0x00FF & VehSpeedRaw_F);
+  WheelSpeed.byte(1) = 0x00FF & VehSpeedRaw_J;
+  WheelSpeed.byte(2) = (0xFF00 & VehSpeedRaw_J) >> 8;
   output(FAxleSpd);
+  output(WheelSpeed);
 }
 /*****************************End*****************************/
 /************************************************************** 
@@ -141,4 +162,37 @@ on message VehDyn_Stat2_AR2
   //Write("diff: %f", this.VehYawRate_Raw.phys - VDC.YawRate.phys);
 }
 /*****************************End*****************************/
-
+/************************************************************** 
+Convert TurnIndLvr_Stat to J1939 RightTurnSignalLights and LeftTurnSignalLights
+***************************************************************/
+On message SCCM_Sw_Stat_AR2
+{
+  attribut_msg(Lighting,2,this.dlc,0x18FE40FE);
+  // write("Benz Turn %X", this.TurnIndLvr_Stat);
+  switch(this.TurnIndLvr_Stat)
+  {
+    case 1: Lighting.byte(1) = 0x40;break;
+    case 2: Lighting.byte(1) = 0x10;break;
+    case 0: Lighting.byte(1) = 0x00;break;  
+  }
+  output(Lighting);
+}
+/*****************************End*****************************/
+/************************************************************** 
+I/O Port convert digital to analog signal
+***************************************************************/
+on message LD
+{
+  int RTurnsignal;
+  RTurnsignal = this.RightTurnSignalLights;
+  if (RTurnsignal == 1)
+  {
+    write("1939 RighTurn %x",RTurnsignal);
+    @sysvar::IO::VN5620_1::DOUT = 1; // Set 13 V analog siganl
+  }
+  else
+  {
+    @sysvar::IO::VN5620_1::DOUT = 0; // Set 0 V analog signal
+  }
+ }
+/*****************************End*****************************/ 
