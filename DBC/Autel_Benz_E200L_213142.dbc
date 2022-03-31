@@ -1,0 +1,192 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: BENZ
+
+
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ New_Signal_23 : 0|8@1- (1,0) [0|0] "" Vector__XXX
+
+BO_ 163 Whl_Rt_Stat_AR2: 8 Vector__XXX
+ SG_ WhlDir_RR_Stat : 54|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ WhlDir_FR_Stat : 30|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 161 Whl_Lt_Stat_AR2: 8 Vector__XXX
+ SG_ WhlDir_RL_Stat : 54|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ WhlDir_FL_Stat : 30|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 152 VehSpd_X_AR2: 8 Vector__XXX
+ SG_ VehSpd_X : 28|12@1+ (0.1,0) [0|409.4] "km/h" Vector__XXX
+ SG_ VehDrvDir_Stat : 14|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 150 VehDyn_Stat2_AR2: 8 Vector__XXX
+ SG_ VehYawRate_Raw : 24|16@1+ (0.01,-327.68) [-327.68|327.66] " бу/s" Vector__XXX
+
+BO_ 148 VehDyn_Stat1_AR2: 8 Vector__XXX
+ SG_ VehAccel_Y_V2 : 24|10@1+ (0.02,-10.24) [-10.24|10.2] " m/s2" Vector__XXX
+ SG_ VehAccel_X_V2 : 12|12@1+ (0.02,-40.96) [-40.96|40.92] "m/s2" Vector__XXX
+
+BO_ 234 VehAccel_X_Rs1_AR2: 8 Vector__XXX
+ SG_ VehAccel_X_Rs : 16|14@1+ (0.004,-40) [-40|25.528] " m/s2" Vector__XXX
+
+BO_ 238 VehAccel_X_Rq_AR2: 8 Vector__XXX
+ SG_ VehAccel_X_Rq_Raw : 32|10@1+ (0.025,-15) [-15|10.525] " m/s2" Vector__XXX
+ SG_ VehAccel_X_Rq : 16|14@1+ (0.004,-40) [-40|25.524] " m/s2" Vector__XXX
+
+BO_ 47 StWhl_Angl_Stat_AR2: 8 Vector__XXX
+ SG_ StWhl_AnglSpd : 32|14@1+ (0.5,-4096) [-4096|4095] " бу/s" Vector__XXX
+ SG_ StWhl_Angl : 16|14@1+ (-0.1,819.2) [-819.2|819] " бу" Vector__XXX
+
+BO_ 131 STA_Rs1_AR2: 8 Vector__XXX
+ SG_ EPS_FtWhlAngl : 16|15@1+ (0.005,-81.92) [-81.92|81.91] "бу" Vector__XXX
+
+BO_ 481 SCCM_Sw_Stat_AR2: 8 Vector__XXX
+ SG_ HiBmLvr_Stat : 14|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ TurnIndLvr_Stat : 12|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 32 Ign_Veh_Stat_AR2: 8 Vector__XXX
+ SG_ RevGr_Engg : 33|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 61 Eng_Rs_3_AR2: 8 Vector__XXX
+ SG_ AccelPdlPosn : 16|8@1+ (0.4,0) [0|100] "%" Vector__XXX
+
+BO_ 165 CMS_PI_State_AR2: 8 Vector__XXX
+ SG_ PI_ObjAhdRelSpd : 56|8@1+ (0.25,0) [0|60] "m/s" Vector__XXX
+ SG_ CMS_VehDecel_Rq : 16|8@1+ (0.1,0) [0|20] "m/s2" Vector__XXX
+ SG_ CMS_Brk_Rq_V2 : 13|3@1+ (1,0) [0|7] "" Vector__XXX
+
+BO_ 135 BrkSys_Stat_AR2: 8 BENZ
+ SG_ BrkTrq_V2 : 16|13@1+ (3,0) [0|24570] "Nm" Vector__XXX
+ SG_ BrkPdl_Stat : 14|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ Brk_Stat : 12|2@1+ (1,0) [0|3] "" Vector__XXX
+
+
+
+CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
+CM_ SG_ 163 WhlDir_RR_Stat "Direction of rotation of rear right wheel (SNA if sensor not present)
+";
+CM_ SG_ 163 WhlDir_FR_Stat "Direction of rotation of front right wheel (SNA if sensor not present)
+";
+CM_ SG_ 152 VehSpd_X "Vehicle longitudinal speed
+";
+CM_ SG_ 152 VehDrvDir_Stat "Vehicle driving direction state
+";
+CM_ SG_ 150 VehYawRate_Raw "Vehicle yaw rate unfiltered/unadjusted (+ means left)
+";
+CM_ SG_ 148 VehAccel_Y_V2 "Vehicle lateral acceleration (+ means left, specific to center of gravity)
+";
+CM_ SG_ 148 VehAccel_X_V2 "Vehicle lateral acceleration (+ means left, specific to center of gravity)
+";
+CM_ SG_ 234 VehAccel_X_Rs "Vehicle longitudinal acceleration response
+";
+CM_ SG_ 238 VehAccel_X_Rq_Raw "Vehicle longitudinal acceleration request raw value
+";
+CM_ SG_ 238 VehAccel_X_Rq "Vehicle longitudinal acceleration request
+";
+CM_ SG_ 47 StWhl_AnglSpd "Steering wheel angle speed
+";
+CM_ SG_ 47 StWhl_Angl "Steering wheel angle (+ means right)
+";
+CM_ SG_ 131 EPS_FtWhlAngl "EPS front wheel angle (+ means left)
+";
+CM_ SG_ 481 HiBmLvr_Stat "High beam lever state
+";
+CM_ SG_ 481 TurnIndLvr_Stat "Turn indicator lever state
+";
+CM_ SG_ 32 RevGr_Engg "Reverse gear engaged
+";
+CM_ SG_ 61 AccelPdlPosn "Accelerator pedal position
+";
+CM_ SG_ 165 PI_ObjAhdRelSpd "Pre-Impact object ahead relative speed
+";
+CM_ SG_ 165 CMS_VehDecel_Rq "Collision mitigation system vehicle decelaration request
+";
+CM_ SG_ 165 CMS_Brk_Rq_V2 "Collision mitigation system braking request
+";
+CM_ SG_ 135 BrkTrq_V2 "Actual driving brake torque (i.e. without brake torque of electrical machine)
+";
+CM_ SG_ 135 BrkPdl_Stat "Brake pedal state
+";
+CM_ SG_ 135 Brk_Stat "Brake state
+";
+BA_DEF_ SG_  "GenSigSendType" ENUM  "Cyclic","OnWrite","OnWriteWithRepetition","OnChange","OnChangeWithRepetition","IfActive","IfActiveWithRepetition","NoSigSendType";
+BA_DEF_ SG_  "GenSigInactiveValue" INT 0 0;
+BA_DEF_ BO_  "GenMsgCycleTime" INT 0 0;
+BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic","not_used","not_used","not_used","not_used","Cyclic","not_used","IfActive","NoMsgSendType";
+BA_DEF_ BU_  "NmStationAddress" HEX 0 0;
+BA_DEF_  "DBName" STRING ;
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "GenSigSendType" "Cyclic";
+BA_DEF_DEF_  "GenSigInactiveValue" 0;
+BA_DEF_DEF_  "GenMsgCycleTime" 0;
+BA_DEF_DEF_  "GenMsgSendType" "NoMsgSendType";
+BA_DEF_DEF_  "NmStationAddress" 0;
+BA_DEF_DEF_  "DBName" "";
+BA_DEF_DEF_  "BusType" "CAN";
+BA_ "DBName" "Autel_Benz_E200L_213142";
+VAL_ 3221225472 New_Signal_23 3 "Signal Not Available" 2 "not defined" 1 "Pedal pressed" 0 "Pedal upstopped" ;
+VAL_ 163 WhlDir_RR_Stat 3 "Signal Not Available" 2 "Direction backward
+" 1 "Direction forward
+" 0 "Neither forward nor backward " ;
+VAL_ 163 WhlDir_FR_Stat 3 "Signal Not Available" 2 "Direction backward
+" 1 "Direction forward
+" 0 "Neither forward nor backward " ;
+VAL_ 161 WhlDir_RL_Stat 3 "Signal Not Available" 2 "Direction backward
+" 1 "Direction forward
+" 0 "Neither forward nor backward " ;
+VAL_ 161 WhlDir_FL_Stat 3 "Signal Not Available" 2 "Direction backward
+" 1 "Direction forward
+" 0 "Neither forward nor backward " ;
+VAL_ 152 VehDrvDir_Stat 3 "Signal Not Available" 2 "Direction backward
+" 1 "Direction forward
+" 0 "Neither forward nor backward " ;
+VAL_ 481 HiBmLvr_Stat 3 "Signal Not Available" 2 "High beam flasher on pulled
+" 1 "High beam on pushed" 0 "High beam lever not pressed
+" ;
+VAL_ 481 TurnIndLvr_Stat 3 "Signal Not Available" 2 "Right turn indicator on pressed" 1 "Left turn indicator on pressed
+" 0 "Turn indicator lever not pressed" ;
+VAL_ 32 RevGr_Engg 3 "Signal Not Available" 2 "not defined
+" 1 "Engaged
+" 0 "Disengaged
+" ;
+VAL_ 165 CMS_Brk_Rq_V2 7 "Signal Not Available" 5 "Braking Request by CMSQ" 4 "Braking Request by BPQ" 3 "Full braking request by CMS2" 2 "Partial braking request by CMS1" 1 "Collision warning by CMS" 0 "No request" ;
+VAL_ 135 BrkPdl_Stat 3 "Signal Not Available" 2 "not defined" 1 "Pedal pressed" 0 "Pedal upstopped" ;
+VAL_ 135 Brk_Stat 3 "Signal Not Available" 2 "not defined
+" 1 "Braking
+
+" 0 "No braking
+
+" ;
+

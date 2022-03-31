@@ -1,0 +1,259 @@
+/*@!Encoding:1252*/
+/*
+convert CAN foramt message (Benz E200L) to CAN extended foramt message (J1939)
+*/
+includes
+{
+  
+}
+variables
+{
+  /* CAN2 Target */
+  message VDC2 Movement;
+  message CCVS WheelSpeed;
+  message TCO1 TachoSpeed;
+  // message LD Lighting;
+  // message SCCM_Sw_Stat_AR2 TurnLight;
+  msTimer timer1;
+  int isTurn;
+  
+  float BenzFactor;
+  float BenzOffset;
+  float J1939Factor;
+  float J1939Offset;
+  
+  float BenzFactor_Long;
+  float BenzOffset_Long;
+  float J1939Factor_Long;
+  float J1939Offset_Long;
+  
+  float BenzFactor_Later;
+  float BenzOffset_Later;
+  float J1939Factor_Later;
+  float J1939Offset_Later;
+  /*VehSpeed variables*/
+  float VehSpeedPhys_B;
+  int VehSpeedRaw_B;
+  int VehSpeedRaw_J;
+  /*SteerWheelAngle variables*/
+  float StWhlPhys_B;
+  int StWhlRaw_B;
+  int StWhlRaw_J;
+  float YawRatePhys_B;
+  int YawRateRaw_B;
+  int YawRateRaw_J;
+  float LongAccPhys_B;
+  int LongAccRaw_B;
+  int LongAccRaw_J;
+  float LateralAccPhys_B;
+  int LateralAccRaw_B;
+  int LateralAccRaw_J;
+}
+void attribut_msg(message*m,int chn, int dlc, dword ID)
+{
+  m.can = chn; // assign channel 
+  m.dlc = dlc; // assign dlc
+  m.id = mkExtId(ID); // assign message ID
+}
+
+InfoText()
+{
+  write("");
+  write("----------------------");
+  write("You have to press:"); 
+  write("<r> turn right"); 
+  write("<l> turn left"); 
+  write("<s> go straight"); 
+  write("<c> cancel");
+  write("----------------------");
+}
+On start
+{
+  writeClear(1);
+  InfoText();
+  attribut_msg(Movement,2,Movement.dlc, 0x18F0090B);
+  Movement.SteerWheelTurnCounter = 0x20; // row data = 0x20 = 32; TurnPhys = 1*(row data) -32 = 0; wenn row data = 32
+}
+
+/************************************************************** 
+convert VehSpeed signal of Benz to J1939 WheelBasedVehicleSpeed and TachoSpeed
+***************************************************************/
+on message VehSpd_X_AR2
+{
+  J1939Factor = 0.0039062485409696;
+  J1939Offset = 0.0;
+  VehSpeedRaw_B = this.VehSpd_X; // get the row value of Benz
+  //Write("VehspeedRaw: %d", VehSpeedRaw_B);
+  VehSpeedPhys_B = this.VehSpd_X.phys; // Benz phys value hier km/h
+  //Write("VehspeedPhys: %f", VehSpeedPhys_B);
+  VehSpeedRaw_J = (VehSpeedPhys_B-J1939Offset)/J1939Factor; // calculate raw value of J1939
+  //Write("VehspeedRaw J1939: %X", VehSpeedRaw_J);
+  attribut_msg(WheelSpeed,2,this.dlc, 0x18FEF100);
+  attribut_msg(TachoSpeed,2,this.dlc, 0xCFE6CEE);
+  WheelSpeed.byte(1) = 0x00FF & VehSpeedRaw_J;
+  WheelSpeed.byte(2) = (0xFF00 & VehSpeedRaw_J) >> 8;
+  TachoSpeed.byte(6) = 0x00FF & VehSpeedRaw_J;
+  TachoSpeed.byte(7) = (0xFF00 & VehSpeedRaw_J) >> 8;
+  output(WheelSpeed);
+  output(TachoSpeed);
+}
+/************************************************************** 
+manuel send Turn light message
+***************************************************************/
+On key*
+{
+  switch(this)
+  {
+    case 'r': isTurn = 1; settimer(timer1,1); break; // turn right
+    case 'l': isTurn = -1; settimer(timer1,1); break; // turn left
+    case 's': isTurn = 0; settimer(timer1,1); break; // go straight
+    case 'c': cancelTimer(timer1); break; // cancel
+  }
+}
+
+On timer timer1
+{
+  message SCCM_Sw_Stat_AR2 msg;
+  if(isTurn == 1) // turn right
+  {
+    msg.TurnIndLvr_Stat = 2;
+    output(msg);
+  }
+  if(isTurn == -1) // turn left
+  {
+    msg.TurnIndLvr_Stat = 1;
+    output(msg);
+  }
+  if(isTurn == 0) // go straight
+  {
+    msg.TurnIndLvr_Stat = 0;
+    output(msg);
+  }
+  settimer(timer1,1);
+}
+/************************************************************** 
+convert Benz StWhl Angle to J1939 
+***************************************************************/ 
+on message StWhl_Angl_Stat_AR2
+{
+  J1939Factor = 0.05595;
+  BenzFactor = -0.1;
+  BenzOffset = 819.2;
+  J1939Offset = -1797.5978;
+  StWhlRaw_B = this.StWhl_Angl; // get the row value of Benz
+  //Write("StWhlRaw: %d",StWhlRaw_B);
+  StWhlPhys_B= this.StWhl_Angl.phys; // calculate the Benz phys value hier rad
+  //Write("StWhlPhys_B: %f", StWhlRaw_B);
+  StWhlRaw_J = (StWhlPhys_B-J1939Offset)/J1939Factor; // calculate raw value of J1939
+  //Write("StWhlRaw J1939: %X", StWhlRaw_J);
+  Movement.byte(0) = 0x00FF & StWhlRaw_J;
+  Movement.byte(1) = (0xFF00 & StWhlRaw_J) >> 8;
+  // Write("Benz Phys degree: %f", this.StWhl_Angl.phys);
+  // Write("J1939 Phys degree: %f", Movement.SteerWheelAngle.phys);
+  output(Movement);
+}
+/************************************************************** 
+convert Benz YawRate to J1939 
+***************************************************************/
+on message VehDyn_Stat2_AR2
+{
+  J1939Factor = 0.0069907;
+  J1939Offset = -224.599459;
+ 
+  BenzFactor  = 0.01;
+  BenzOffset = -327.68;
+  
+  YawRateRaw_B = this.VehYawRate_Raw;
+  YawRatePhys_B = this.VehYawRate_Raw.phys;
+  YawRateRaw_J = (YawRatePhys_B-J1939Offset)/J1939Factor;
+  
+  Movement.byte(3) = 0x00FF & YawRateRaw_J;
+  Movement.byte(4) = (0xFF00 & YawRateRaw_J) >>8; 
+}
+/************************************************************** 
+convert Benz Accelation to J1939 
+***************************************************************/
+on message VehDyn_Stat1_AR2
+{
+  J1939Factor_Later = 0.00048827328612559;
+  J1939Offset_Later = -15.687;
+  J1939Factor_Long = 0.1;
+  J1939Offset_Long = -12.5;
+  
+  BenzFactor_Later = 0.02;
+  BenzOffset_Later = -10.24; 
+  BenzFactor_Long = 0.02;
+  BenzOffset_Long = -40.96;
+  
+  LateralAccRaw_B = this.VehAccel_Y_V2; // get the row value of Benz
+  LongAccRaw_B = this.VehAccel_X_V2; // // get the row value of Benz
+  
+  LateralAccPhys_B = this.VehAccel_Y_V2.phys; // get the phys value of Benz
+  LongAccPhys_B = this.VehAccel_X_V2.phys; // get the phys value of Benz
+  
+  LateralAccRaw_J = (LateralAccPhys_B-J1939Offset_Later)/J1939Factor_Later;
+  LongAccRaw_J = (LongAccPhys_B-J1939Offset_Long)/J1939Factor_Long;
+  // Write("LateralAccRaw_J J1939: %X", (0xFF00 & LateralAccRaw_J) >>8);
+  // Write("LongAccRaw_J J1939: %X", LongAccRaw_J);
+  // LaterialAcc
+  Movement.byte(5) = 0x00FF & LateralAccRaw_J;
+  Movement.byte(6) = (0xFF00 & LateralAccRaw_J) >>8;
+  // LongAcc
+  Movement.byte(7) = LongAccRaw_J;
+}
+/************************************************************** 
+Convert TurnIndLvr_Stat to J1939 RightTurnSignalLights and LeftTurnSignalLights
+***************************************************************/
+/*On message SCCM_Sw_Stat_AR2
+{
+  attribut_msg(Lighting,2,this.dlc,0x18FE40FE);
+  write("Benz Turn %X", this.TurnIndLvr_Stat);
+  switch(this.TurnIndLvr_Stat)
+  {
+    case 1: Lighting.byte(1) = 0x40;break;
+    case 2: Lighting.byte(1) = 0x10;break;
+    case 0: Lighting.byte(1) = 0x00;break;  
+  }
+  output(Lighting);
+}*/
+/************************************************************** 
+I/O Port convert digital to analog signal
+***************************************************************/
+/*on message LD
+{
+  int RTurnsignal;
+  RTurnsignal = this.RightTurnSignalLights;
+  write("1939 RighTurn %x",RTurnsignal);
+  if (RTurnsignal == 1)
+  {
+    @sysvar::IO::VN5620_1::DOUT = 1; // Set 13 V analog siganl
+  }
+  else
+  {
+    @sysvar::IO::VN5620_1::DOUT = 0; // Set 0 V analog signal
+  }
+ }*/
+/*
+on message CAN1.* // Called when a message received on CAN1
+{
+  if(this.DIR==RX)        // if it is a received frame
+  {
+   if(this.CAN==1 & this.dlc!=0) // block message from channel 2 and filter message based on dlc
+   {
+    BenzSpdFactor =  0.1;
+    J1939SpdFactor = 0.0039062485409696;
+    if(this.ID==0x98) 
+    {
+      VehSpeed = this.VehSpd_X;
+      Write("Vehspeed %d", VehSpeed);
+      attribut_msg(m,2,this.dlc, 0xCFE6C17);
+      m.byte(6) = ((0x0F & this.byte(4)) << 4)|((0xF0 & this.byte(3)) >> 4); // ((00001111 & this.byte(4)) shift to left 4 bits)|((11110000 & this.byte(3)) shift to right 4 bits)
+      m.byte(7) = (0xF0 & this.byte(4)) >> 4;                                // (11110000 & this.byte(4)) shift to right 4 bits
+      output(m);      // send it to the other channel
+    }
+    
+    
+   }
+  }
+}
+*/
