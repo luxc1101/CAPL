@@ -1,0 +1,118 @@
+/*@!Encoding:1252*/
+/*
+convert CAN foramt message (Benz E200L) to CAN extended foramt message (J1939)
+*/
+includes
+{
+  
+}
+variables
+{  
+  message CAN2.*m;
+  message SCCM_Sw_Stat_AR2 TurnSingal;
+  msTimer timer1;
+  int isTurn;
+  int TurnInd;
+}
+void attribut_msg(message *m, int chn, int dlc, dword ID)
+{
+  m.can = chn; // assign channel 
+  m.dlc = dlc; // assign dlc
+  m.id = ID; // assign message ID
+}
+
+InfoText()
+{
+  write("");
+  write("----------------------");
+  write("You have to press:"); 
+  write("<r> turn right"); 
+  write("<l> turn left"); 
+  write("<s> go straight"); 
+  write("<c> cancel");
+  write("----------------------");
+}
+On start
+{
+  writeClear(1);
+  InfoText();
+  attribut_msg(TurnSingal,2,TurnSingal.dlc, 0x1E1);
+  // settimer(timer1,1);
+  isTurn = 2;
+}
+
+on message CAN1.*
+{ 
+  if (isTurn == 2)
+  {
+      m = this;
+      if (m.id == 0x1E1)
+      {
+          // write("isTurn: %d", isTurn);
+          // write("%d",m.byte(1) & 00110000);
+        
+          if ((m.byte(1) & 00110000) == 2){
+            @sysvar::IO::VN5620_1::DOUT = 1; 
+          }
+          else{
+            @sysvar::IO::VN5620_1::DOUT = 0; 
+          }   
+      }
+      output(m);
+  }
+  else
+  {
+    // write("isTurn: %d", isTurn);
+    if (this.id != 0x1E1)
+      {
+        m = this;
+        output(m);
+      }
+    else{
+      if (TurnSingal.TurnIndLvr_Stat == 2)
+        {
+          write("13 volt analog singal output");
+          @sysvar::IO::VN5620_1::DOUT = 1;
+        }
+      else
+        {
+          @sysvar::IO::VN5620_1::DOUT = 0; 
+        }
+    }
+  }
+}
+/************************************************************** 
+manuel send Turn light message
+***************************************************************/
+On key*
+{
+  switch(this)
+  {
+    case 'r': isTurn = 1; settimer(timer1,1); break; // turn right
+    case 'l': isTurn = -1; settimer(timer1,1);break; // turn left
+    case 's': isTurn = 0; settimer(timer1,1); break; // go straight
+    case 'c': cancelTimer(timer1); write("manuel turn signal is canceled"); isTurn = 2;break; // cancel
+  }
+}
+
+
+On timer timer1
+{
+  if(isTurn == 1) // turn right
+  {
+    TurnSingal.TurnIndLvr_Stat = 2;
+    output(TurnSingal);
+  }
+  if(isTurn == -1) // turn left
+  {
+    TurnSingal.TurnIndLvr_Stat = 1;
+    output(TurnSingal);
+  }
+  if(isTurn == 0) // go straight
+  {
+    TurnSingal.TurnIndLvr_Stat = 0;
+    output(TurnSingal);
+  }
+  settimer(timer1,1000);
+}
+

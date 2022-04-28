@@ -1,8 +1,8 @@
 /*@!Encoding:1252*/
 variables 
 {
-  char path[1000] = "C:/Autel/Doc/Data/CAN_ASC/Fiat/";
-  char filename[1000] = "OBC Test fiat_{Date}_{IncSize|000|100MB}.asc";
+  char path[1000] = "C:/Autel/Doc/Data/CAN_ASC/CANFD/";
+  char filename[1000] = "CANFD_{Date}_{IncSize|000|100MB}.asc";
 }
 
 on message *

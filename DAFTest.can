@@ -73,6 +73,9 @@ On start
   InfoText();
   attribut_msg(Movement,2,Movement.dlc, 0x18F0090B);
   Movement.SteerWheelTurnCounter = 0x20; // row data = 0x20 = 32; TurnPhys = 1*(row data) -32 = 0; wenn row data = 32
+  Movement.YawRate = 0x7D70; // init YawRate
+  Movement.LongitudinalAcceleration = 0x7D; // Init LongitudinalAcce
+  Movement.LateralAcceleration = 0x7D7D; // init LateralAcce
 }
 
 /************************************************************** 
@@ -160,7 +163,7 @@ on message VehDyn_Stat2_AR2
   J1939Factor = 0.0069907;
   J1939Offset = -224.599459;
  
-  BenzFactor  = 0.01;
+  BenzFactor = 0.01;
   BenzOffset = -327.68;
   
   YawRateRaw_B = this.VehYawRate_Raw;
@@ -168,7 +171,8 @@ on message VehDyn_Stat2_AR2
   YawRateRaw_J = (YawRatePhys_B-J1939Offset)/J1939Factor;
   
   Movement.byte(3) = 0x00FF & YawRateRaw_J;
-  Movement.byte(4) = (0xFF00 & YawRateRaw_J) >>8; 
+  Movement.byte(4) = (0xFF00 & YawRateRaw_J) >>8;
+  output(Movement);
 }
 /************************************************************** 
 convert Benz Accelation to J1939 
@@ -200,6 +204,7 @@ on message VehDyn_Stat1_AR2
   Movement.byte(6) = (0xFF00 & LateralAccRaw_J) >>8;
   // LongAcc
   Movement.byte(7) = LongAccRaw_J;
+  output(Movement);
 }
 /************************************************************** 
 Convert TurnIndLvr_Stat to J1939 RightTurnSignalLights and LeftTurnSignalLights
