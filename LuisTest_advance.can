@@ -2,18 +2,23 @@
 /*
 convert CAN foramt message (Benz E200L) to CAN extended foramt message (J1939)
 */
+
 includes
 {
   
 }
+
 variables
 {  
   message CAN2.*m;
   message SCCM_Sw_Stat_AR2 TurnSingal;
-  msTimer timer1;
+  msTimer timer1, delaytimer;
   int isTurn;
   int TurnInd;
+  long delayTimerPeriod = 4;
 }
+
+// 
 void attribut_msg(message *m, int chn, int dlc, dword ID)
 {
   m.can = chn; // assign channel 
@@ -21,71 +26,56 @@ void attribut_msg(message *m, int chn, int dlc, dword ID)
   m.id = ID; // assign message ID
 }
 
-InfoText()
+void InfoText()
 {
   write("");
   write("----------------------");
   write("Manuel control turn signal:"); 
-  write("<r> turn right"); 
-  write("<l> turn left"); 
-  write("<s> go straight"); 
-  write("<c> cancel");
+  write("<R> turn right"); 
+  write("<L> turn left"); 
+  write("<S> go straight"); 
+  write("<C> cancel");
   write("----------------------");
 }
+
 On start
 {
   writeClear(1);
   InfoText();
-  attribut_msg(TurnSingal,2,TurnSingal.dlc, 0x1E1);
-  // settimer(timer1,1);
+  attribut_msg(TurnSingal, 2, TurnSingal.dlc, 0x1E1);
+  // settimer(delaytimer, delayTimerPeriod);
   isTurn = 2;
 }
 
 on message CAN1.*
-{ 
+{
   if (isTurn == 2)
   {
-      /********* CAN Msg in real**********/ 
       m = this;
       if (m.id == 0x1E1)
-      {
+        {
           // write("isTurn: %d", isTurn);
           // write("%d",m.byte(1) & 00110000);
-          
-          if ((m.byte(1) & 00110000) == 2){
+         if ((m.byte(1) & 00110000) == 2){
             @sysvar::IO::VN5620_1::DOUT = 1; 
           }
           else{
             @sysvar::IO::VN5620_1::DOUT = 0; 
-          }   
-      }
-      else{
-        @sysvar::IO::VN5620_1::DOUT = 0;
-      }
+          }
+        }
       output(m);
   }
   else
   {
-    // write("isTurn: %d", isTurn);
+    // write("Turn: %d", isTurn);
     if (this.id != 0x1E1)
       {
         m = this;
         output(m);
       }
-    else{
-      if (TurnSingal.TurnIndLvr_Stat == 2)
-        {
-          write("13 volt analog singal output");
-          @sysvar::IO::VN5620_1::DOUT = 1;
-        }
-      else
-        {
-          @sysvar::IO::VN5620_1::DOUT = 0; 
-        }
-      output(TurnSingal);
-    }
   }
 }
+    
 /************************************************************** 
 manuel send Turn light message
 ***************************************************************/
@@ -96,28 +86,40 @@ On key*
     case 'r': isTurn = 1; settimer(timer1,1); break; // turn right
     case 'l': isTurn = -1; settimer(timer1,1);break; // turn left
     case 's': isTurn = 0; settimer(timer1,1); break; // go straight
-    case 'c': cancelTimer(timer1); write("manuel turn signal is canceled"); isTurn = 2;break; // cancel
+    case 'c': cancelTimer(timer1); write("Manuel turn signal is canceled"); isTurn = 2;break; // cancel
+    case 'b': settimer(delaytimer,1); break;
   }
 }
-
 
 On timer timer1
 {
   if(isTurn == 1) // turn right
   {
     TurnSingal.TurnIndLvr_Stat = 2;
+    write("Turning right...");
+    write("13 volt analog singal output");
+    @sysvar::IO::VN5620_1::DOUT = 1; // 1 Digital Signal
+    setTimer(delaytimer,1000);
     output(TurnSingal);
   }
   if(isTurn == -1) // turn left
   {
     TurnSingal.TurnIndLvr_Stat = 1;
+    write("Turning left...");
     output(TurnSingal);
   }
   if(isTurn == 0) // go straight
   {
     TurnSingal.TurnIndLvr_Stat = 0;
+    write("Going straight...");
     output(TurnSingal);
   }
-  settimer(timer1,1000);
+  settimer(timer1,1500);
+}
+
+on timer delaytimer
+{
+  write("13 volt analog singal turn off");
+  @sysvar::IO::VN5620_1::DOUT = 0;
 }
 
