@@ -1,0 +1,118 @@
+1. select slave board and FOV Vertival enable/disable set to 1:
+
+	when in selector slave is selected ID = 701 otherwise ID = 700;
+
+	if FOV Vertival enable/disable set to 0 and slave board is selected, after config FOV Parameters, the chn 0 in can box will continue receive can frame radar slave chip, that cause a occupoation of the chn 0, so first of all we need to close the canframe output from slave chip;
+
+	once can box send msg to radar, radar will send response msg back;
+
+	- can box send to radar 	 	(tx) 	ID: 701 Data: 10 1C 2E 50 59 02 00 00
+	- can box receive from radar	(rx)	ID: 711 Data: 30 4B 00 00 00 00 00 00
+	- can box send to radar 	 	(tx)	ID: 701 Data: 21 00 00 00 00 00 00 00 (config warning range)
+	- can box send to radar 		(tx)	ID: 701 Data: 22 00 00 00 00 00 00 01 (cause set fov vertival enable/disable to 1)
+	- can box send to radar         (tx)	ID: 701 Data: 23 00 00 00 00 00 00 00
+	- can box send to radar         (tx)    ID: 701 Data: 24 00 00 00 00 00 00 00
+	- can box receive from radar	(rx)	ID: 711 Data: 04 6E 50 59 02 00 00 00
+
+2. configure warning range and FOV
+	
+
+	set Configure warning range Level: 1 enable/disable set 1, set min_distance and max_distance with unit CM
+
+	- can box send to radar 		(tx)	ID: 701 Data: 10 16 2E 50 59 01 00 01 (cause set warning range level enable/disable to 1)
+	- can box receive from radar	(rx)	ID: 711 Data: 30 4B 00 00 00 00 00 00
+	- can box receive from radar 	(tx)	ID: 701 Data: 21 xx xx xx xx 00 00 00 (min_distance is be saved in byte 1 and 2 max_distance is be saved in byte 3 and 4)
+
+	examples >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+	min_distance = 0, max_distance = 100:
+
+	- can box receive from radar 	(tx)	ID: 701 Data: 21 00 00 00 64 00 00 00
+
+	min_distance = 0, max_distance = 200:
+
+	- can box receive from radar 	(tx)	ID: 701 Data: 21 00 00 00 C8 00 00 00
+
+	min_distance = 100, max_distance = 1000:
+
+	- can box receive from radar 	(tx)	ID: 701 Data: 21 00 64 03 E8 00 00 00
+
+	end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+	- can box send to radar 		(tx)	ID: 701 Data: 22 00 00 00 00 00 00 00
+	- can box send to radar 		(tx)	ID: 701 Data: 23 00 00 00 00 00 00 00
+	- can box receive from radar	(rx)	ID: 711 Data: 04 6E 50 59 01 00 00 00
+
+	if click the button "check warning range"
+
+	- can box send to radar 		(tx)	ID: 701 Data: 04 22 50 59 01 00 00 00 
+	- can box receive from radar 	(rx)	ID: 711 Data: 10 16 62 50 59 01 00 01
+	- can box send to radar 		(tx)	ID: 701 Data: 30 00 14 00 00 00 00 00
+	- can box receive from radar 	(rx)    ID: 711 Data: 21 xx xx xx xx 00 00 00
+	- can box receive from radar    (rx)	ID: 711 Data: 22 00 00 00 00 00 00 00
+	- can box receive from radar    (rx)	ID: 711 Data: 23 00 00 00 00 00 00 00
+	- can box receive from radar    (rx)    ID: 711 Data: 24 00 00 00 00 00 00 00
+
+	set FOV Horizontal enable/disable 1 and set H_FOV<0 & H_FOV>0
+
+	- can box send to radar	 		(tx)	ID: 701 Data: 10 1C 2E 50 59 02 00 00
+	- can box receive from radar 	(rx)	ID: 711 Data: 30 4B 00 00 00 00 00 00
+	
+	examples >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
+
+	theta = 45:
+
+	- can box send to radar 		(tx)	ID: 701 Data: 21 00 01 C2 34 00 00 42
+	- can box send to radar 		(tx)	ID: 701 Data: 22 34 00 00 00 00 00 01
+
+	theta = 60:
+
+	- can box send to radar 		(tx)	ID: 701 Data: 21 00 01 C2 70 00 00 42
+	- can box send to radar 		(tx)	ID: 701 Data: 22 70 00 00 00 00 00 01
+
+	theta = 70:
+
+	- can box send to radar 		(tx)	ID: 701 Data: 21 00 01 C2 8C 00 00 42
+	- can box send to radar 		(tx)	ID: 701 Data: 22 8C 00 00 00 00 00 01
+
+	theta = 80:
+
+	- can box send to radar 		(tx)	ID: 701 Data: 21 00 01 C2 A0 00 00 42
+	- can box send to radar 		(tx)	ID: 701 Data: 22 A0 00 00 00 00 00 01
+
+	theta = 90:
+
+	- can box send to radar 		(tx)	ID: 701 Data: 21 00 01 C2 B4 00 00 42
+	- can box send to radar 		(tx)	ID: 701 Data: 22 B4 00 00 00 00 00 01
+
+	end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+    - can box send to radar    		(tx) 	ID: 701 Data: 23 00 00 00 00 00 00 00
+    - can box send to radar    		(tx) 	ID: 701 Data: 24 00 00 00 00 00 00 00
+    - can box receive from radar 	(rx) 	ID: 711 Data: 04 6E 50 59 02 00 00 00
+
+    if click the button "check FOV parameters" theta = 45:
+
+    - can box send to radar 		(tx)	ID: 701 Data: 04 22 50 59 02 00 00 00 
+    - can box receive from radar    (rx)    ID: 711 Data: 10 1C 62 50 59 02 00 00 
+	- can box send to radar         (tx)   	ID: 701 Data: 30 00 14 00 00 00 00 00
+    - can box receive from radar    (rx)    ID: 711 Data: 21 00 01 C2 34 00 00 42
+    - can box receive from radar    (rx)    ID: 711 Data: 22 34 00 00 00 00 00 01
+    - can box receive from radar    (rx)    ID: 711 Data: 23 00 00 00 00 00 00 00
+    - can box receive from radar    (rx)    ID: 711 Data: 24 00 00 00 00 00 00 00
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

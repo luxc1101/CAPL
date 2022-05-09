@@ -24,7 +24,6 @@ variables
   float J1939Offset;
   /*VehSpeed variables*/
   float VehSpeedPhys_B;
-  int VehSpeedRaw_B;
   int VehSpeedRaw_J;
 }
 
@@ -33,6 +32,11 @@ void attribut_msg(message*m,int chn, int dlc, dword ID)
   m.can = chn; // assign channel 
   m.dlc = dlc; // assign dlc
   m.id = mkExtId(ID); // assign message ID
+}
+/**** Initialize some variables at beginning *****/
+On start
+{
+  writeClear(1);
 }
 /************************************************************** 
 convert VehSpeed singal of Benz to J1939 TachographVehicleSpeed
@@ -43,9 +47,8 @@ on message VehSpd_X_AR2
   BenzFactor = 0.1;
   BenzOffset = 0.0;
   J1939Offset = 0.0;
-  VehSpeedRaw_B = this.VehSpd_X; // get the raw value of Benz
-  //Write("VehspeedRaw: %d", VehSpeedRaw_B);
-  VehSpeedPhys_B = BenzFactor*VehSpeedRaw_B + BenzOffset; // calculate the Benz phys value hier km/h
+
+  VehSpeedPhys_B = this.VehSpd_X.phys;; // calculate the Benz phys value hier km/h
   //Write("VehspeedPhys: %f", VehSpeedPhys_B);
   VehSpeedRaw_J = (VehSpeedPhys_B-J1939Offset)/J1939Factor; // calculate raw value of J1939
   //Write("VehspeedRaw J1939: %X", VehSpeedRaw_J);

@@ -39,9 +39,11 @@ variables
   float StWhlPhys_B;
   int StWhlRaw_B;
   int StWhlRaw_J;
+  /*YawRate variables*/
   float YawRatePhys_B;
   int YawRateRaw_B;
   int YawRateRaw_J;
+  /*Accelation variables*/
   float LongAccPhys_B;
   int LongAccRaw_B;
   int LongAccRaw_J;
@@ -238,27 +240,3 @@ I/O Port convert digital to analog signal
     @sysvar::IO::VN5620_1::DOUT = 0; // Set 0 V analog signal
   }
  }*/
-/*
-on message CAN1.* // Called when a message received on CAN1
-{
-  if(this.DIR==RX)        // if it is a received frame
-  {
-   if(this.CAN==1 & this.dlc!=0) // block message from channel 2 and filter message based on dlc
-   {
-    BenzSpdFactor =  0.1;
-    J1939SpdFactor = 0.0039062485409696;
-    if(this.ID==0x98) 
-    {
-      VehSpeed = this.VehSpd_X;
-      Write("Vehspeed %d", VehSpeed);
-      attribut_msg(m,2,this.dlc, 0xCFE6C17);
-      m.byte(6) = ((0x0F & this.byte(4)) << 4)|((0xF0 & this.byte(3)) >> 4); // ((00001111 & this.byte(4)) shift to left 4 bits)|((11110000 & this.byte(3)) shift to right 4 bits)
-      m.byte(7) = (0xF0 & this.byte(4)) >> 4;                                // (11110000 & this.byte(4)) shift to right 4 bits
-      output(m);      // send it to the other channel
-    }
-    
-    
-   }
-  }
-}
-*/
